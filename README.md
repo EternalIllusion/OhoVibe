@@ -3,6 +3,8 @@ A simple controller program for MyZhaZha's vibe plug.
 
 Written in arduino and based on ESP32.
 
+Online controller: [click here](https://eterill.xyz/OhoVibe/)
+
 ## Dependencies
 
 You need to install **ESP32** Boards and **following libraries**.
