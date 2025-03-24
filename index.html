@@ -219,7 +219,8 @@
         function shareurl(){
             let sip = wstarget.value.split(":")[0];
             let spp = wstarget.value.split(":")[1];
-            alert(`请将一下内容复制后粘贴给你想要分享控制权的对象，需要在同一网络下：https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}`);
+            logMessage(`请将以下内容复制后粘贴给你想要分享控制权的对象（需要在同一网络下）：`);
+            logMessage(`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp} <a href="javascript;;" onclick="copyToClip(\`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}</a>\`">点击复制</a>`);
         }
         // 设置滑条数值
         function setSliderValue(value) {
@@ -266,7 +267,24 @@
             button.innerText = `${id}: ${currentValue}%`;
             sendWSMessage(id, currentValue);
         }
-        
+        /**
+         * 复制单行内容到粘贴板
+         * content : 需要复制的内容
+         * message : 复制完后的提示，不传则默认提示"复制成功"
+         */
+        function copyToClip(content, message) {
+            var aux = document.createElement("input"); 
+            aux.setAttribute("value", content); 
+            document.body.appendChild(aux); 
+            aux.select();
+            document.execCommand("copy"); 
+            document.body.removeChild(aux);
+            if (message == null) {
+                alert("复制成功");
+            } else{
+                alert(message);
+            }
+        }
         // 设置所有按钮的值
         function setAllValues(value) {
             const buttons = document.querySelectorAll('#buttons button');
