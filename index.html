@@ -9,36 +9,36 @@
         *{
         transition: all 0.3s ease;
         }
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #EFF1F0;
-            }
-            
-            .container {
-                margin: 20px;
-                background-color: #ffffff;
-                border-radius: 30px;
-                padding: 20px;
-            }
-            .button-group {
-                margin: 10px 0;
-            }
-            .slider {
-                width: 200px;
-            }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #EFF1F0;
+        }
         
-            .btmgroup{
-                width: 100%;
-                display: -webkit-flex;
-                display: flex;
-                justify-content: center;
-            }
-            .btngroup{
-                width: 100%;
-                display: -webkit-flex;
-                display: flex;
-                justify-content: space-between;
-            }
+        .container {
+            margin: 20px;
+            background-color: #ffffff;
+            border-radius: 30px;
+            padding: 20px;
+        }
+        .button-group {
+            margin: 10px 0;
+        }
+        .slider {
+            width: 200px;
+        }
+    
+        .btmgroup{
+            width: 100%;
+            display: -webkit-flex;
+            display: flex;
+            justify-content: center;
+        }
+        .btngroup{
+            width: 100%;
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
+        }
         input {
           background-color: #ffffff;
           border: none;
@@ -68,8 +68,8 @@
                 border-radius: 7px;
                 cursor: pointer;
                 transition: all 0.3s ease;
-                opacity: 0.5;
-            }
+                
+        }
             
         button.active {
           border: 2px solid #357EC2;
@@ -95,6 +95,7 @@
             width: 18vw;
             height: 18vw;
             margin: 2vw;
+            opacity: 0.5;
         }
         #svc {
             border: none;
@@ -104,15 +105,15 @@
             color: #000;
             }
         
-            .log-box {
-                margin-top: 20px;
-                height: 150px;
-                border: 1px solid #ccc;
-                padding: 10px;
-                overflow-y: auto;
-                font-size: 12px;
-                background-color: #f5f5f5;
-            }
+        .log-box {
+            margin-top: 20px;
+            height: 150px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: auto;
+            font-size: 12px;
+            background-color: #f5f5f5;
+        }
         #wheel-container {
             position: relative;
             width: 70vw;
@@ -123,11 +124,11 @@
             background-color: #eff1f0;
             margin-bottom: 30px
         }
-                .ctrlgrp{
-                    height:auto;
-                    opacity:1;
-                    overflow:hidden;
-                }
+        .ctrlgrp{
+            height:auto;
+            opacity:1;
+            overflow:hidden;
+        }
         .hidd {
             height:0;
             opacity:0; 
@@ -143,8 +144,9 @@
         <div id="buttonGroup" class="button-group">
             <div id="swiper" class="ctrlgrp hidd">
                 <div id="wheel-container"></div>
+                <div style="height:5vw;"></div>
             </div>
-            <div id="normal" class="ctrgrp">
+            <div id="normal" class="ctrlgrp">
                 <div class="btmgroup">
                     <input type="range" id="slider" class="slider" min="0" max="100" value="0" list="tickmarks" onchange="slidervchg();" />
                     <datalist id="tickmarks">
@@ -240,243 +242,243 @@
             
         }
         	
-        		let isTouchingWheel = false;
-        		let isWSCooldown = false;
-        		let wscdtime = 100;
-        		//如果延迟还是比较大就把上面这个改大一点
-        		let ws;
-        		let wsConnected = false;
-        		const url = new URL(window.location.href);
-        		let tdip = url.searchParams.get('ip'); 
-        		let tdport = url.searchParams.get('port');
-        		if(!tdip){tdip="192.168.69.1";}
-        		if(!tdport){tdport="81";}		
-        		let wstarget = document.getElementById('wst-text');
-        		    
-        		window.onload = function(){
-        		    wstarget.value = (`${tdip}:${tdport}`);
-        		    }
-        		function shareurl(){
-        		    let sip = wstarget.value.split(":")[0];
-        		    let spp = wstarget.value.split(":")[1];
-        		    if(!spp){spp=81;}
-        		    logMessage(`请将以下内容复制后粘贴给你想要分享控制权的对象（需要在同一网络下）：`);
-        		    logMessage(`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}<br/><button class="mode" onclick="copyToClip(\`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}\`);">点击复制</button>`);
-        		}
-        		function updateurl(){
-        		    let sip = wstarget.value.split(":")[0];
-        		    let spp = wstarget.value.split(":")[1];
-        		    if(!spp){spp=81;}
-        		    let linker = document.getElementById('lnk');
-        		    linker.href=`./swipe?ip=${sip}&port=${spp}`;
-        		    linker.click();
-        		}
-        		function randomToggle() {
-            if (mode !== 1) {
-                return;
-            }
-            const randomId = Math.floor(Math.random() * 11) + 1;
-            toggleButtonValue(randomId, 1);
-            // 随机间隔（50ms到200ms）
-            const delay = Math.floor(Math.random() * (200 - 50 + 1)) + 50;
-            setTimeout(() => {
-                if (mode !== 1) {
-                    return;
-                }
-                toggleButtonValue(randomId, 0);
-                randomToggle();
-            }, delay);
+		let isTouchingWheel = false;
+		let isWSCooldown = false;
+		let wscdtime = 100;
+		//如果延迟还是比较大就把上面这个改大一点
+		let ws;
+		let wsConnected = false;
+		const url = new URL(window.location.href);
+		let tdip = url.searchParams.get('ip'); 
+		let tdport = url.searchParams.get('port');
+		if(!tdip){tdip="192.168.69.1";}
+		if(!tdport){tdport="81";}		
+		let wstarget = document.getElementById('wst-text');
+		    
+		window.onload = function(){
+		    wstarget.value = (`${tdip}:${tdport}`);
+		    }
+		function shareurl(){
+		    let sip = wstarget.value.split(":")[0];
+		    let spp = wstarget.value.split(":")[1];
+		    if(!spp){spp=81;}
+		    logMessage(`请将以下内容复制后粘贴给你想要分享控制权的对象（需要在同一网络下）：`);
+		    logMessage(`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}<br/><button class="mode" onclick="copyToClip(\`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}\`);">点击复制</button>`);
+		}
+		function updateurl(){
+		    let sip = wstarget.value.split(":")[0];
+		    let spp = wstarget.value.split(":")[1];
+		    if(!spp){spp=81;}
+		    let linker = document.getElementById('lnk');
+		    linker.href=`./swipe?ip=${sip}&port=${spp}`;
+		    linker.click();
+		}
+		function randomToggle() {
+    if (mode !== 1) {
+        return;
+    }
+    const randomId = Math.floor(Math.random() * 11) + 1;
+    toggleButtonValue(randomId, 1);
+    // 随机间隔（50ms到200ms）
+    const delay = Math.floor(Math.random() * (200 - 50 + 1)) + 50;
+    setTimeout(() => {
+        if (mode !== 1) {
+            return;
         }
-        		// 设置滑条数值
-        		function setSliderValue(value) {
-        		    document.getElementById('slider').value = value;
-        		    slidervchg();
-        		}
-        		
-        		// 同步滑条数值
-        		function slidervchg() {
-        		    const sliderValue = parseInt(document.getElementById('slider').value);
-        		    document.getElementById('sliderv').innerHTML = `${sliderValue.toString().padStart(2,0)}%`;
-        		    if(mode ===2) {
-        		        updateButtonValues(sliderValue)
-        		    }
-        		}
-        		
-        		// 更新按钮的数值
-        		function updateButtonValues(sliderValue) {
-        		    const buttons = document.querySelectorAll('#buttons button');
-        		    let actives = parseInt(sliderValue) >= 1;
-        		    buttons.forEach(button => {
-        		        const buttonValue = parseInt(button.innerText.split(":")[1]);
-        		        if (buttonValue !== sliderValue) {
-        		            button.innerText = button.innerText.split(":")[0] + `: ${sliderValue}%`;
-        		            button.classList.toggle('active', actives);
-        		            
-        		        }
-        		        button.style.opacity = ((sliderValue/100)*0.5+0.5).toString();
-        		    });
-        		    sendWSMessage(12, sliderValue);
-        		}
-        		
-        		// 切换按钮数值
-        		function toggleButtonValue(id,val) {
-        		    
-        		    const button = document.querySelector(`#button${id}`);
-        		    let currentValue = parseInt(button.innerText.split(":")[1]);
-        		    let sliderValue = parseInt(document.getElementById('slider').value);
-        if (val !== undefined && val !== null) {
-                sliderValue = val;
-            }
-        		
-        		    if (currentValue === sliderValue) {
-        		        currentValue = 0;
-        		    } else {
-        		        currentValue = sliderValue;
-        		    }
-        		
-        		    if (currentValue < 1) {
-        		        button.classList.remove('active');
-        		    } else {
-        		        button.classList.add('active');
-        		    }
-        		
-        		    button.innerText = `0: ${currentValue}%`;
-        		    button.style.opacity = ((currentValue/100)*0.5+0.5).toString();
-        		    sendWSMessage(id, currentValue);
-        		}
-        		
-        		//复制单行内容到粘贴板
-        		function copyToClip(content, message) {
-        		    var aux = document.createElement("input"); 
-        		    aux.setAttribute("value", content); 
-        		    document.body.appendChild(aux); 
-        		    aux.select();
-        		    document.execCommand("copy"); 
-        		    document.body.removeChild(aux);
-        		    if (message == null) {
-        		        alert("复制成功");
-        		    } else{
-        		        alert(message);
-        		    }
-        		}
-        		// 设置所有按钮的值
-        		function setAllValues(value) {
-        		    const buttons = document.querySelectorAll('#buttons button');
-        		    buttons.forEach(button => {
-        		        const id = parseInt(button.id.replace('button', ''));
-        		        button.innerText = `0: ${value}%`;
-        		        button.classList.toggle('active', value >= 1);
-        		        button.style.opacity = ((value/100)*0.5+0.5).toString();
-        		    });
-        		    sendWSMessage(12, value);
-        		}
-        		
-        		// 发送WS消息
-        		function sendWSMessage(id, value) {
-        		    const wsValue = Math.round((value / 100) * 9999);  // 将0-100%映射到0-9999
-        		    const formattedValue = wsValue.toString().padStart(4, '0');
-        		    const message = `${id - 1}${formattedValue}`;
-        		    //logMessage(`发送命令:${id}-${value}(${message})`);
-        		    //logMessage(`发送:${parseInt(id)===12?"全部":id}-${value}`);
-        		    
-        		    if (wsConnected && ws.readyState === WebSocket.OPEN) {
-        		    logMessage(`发送成功:${parseInt(id)===12?"全部":id}-${value}`);
-        		        ws.send(message);
-        		    }else{
-        		        logMessage(`未连接，发送失败`);
-        		    }
-        		}
-        		
-        		// 连接或断开WS
-        		function toggleWSConnection() {
-        		    if (wsConnected) {
-        		        ws.close();
-        		        wsConnected = false;
-        		        document.getElementById('wsStatus').innerText = '已断开';
-        		    } else {
-        		    document.getElementById('wsStatus').innerText = '连接中';
-        		        ws = new WebSocket("ws://"+wstarget.value);
-        		        ws.onopen = () => {
-        		            wsConnected = true;
-        		            
-        		            logMessage("连接成功");
-        		        };
-        		        ws.onclose = () => {
-        		            wsConnected = false;
-        		            document.getElementById('wsStatus').innerText = '已断开';
-        		            logMessage("连接断开");
-        		        };
-        		        ws.onerror = () => {
-        		            logMessage("连接错误");
-        		        };
-        		    }
-        		}
-        		
-        		// 打印日志
-        		function logMessage(message) {
-        		    const logBox = document.getElementById('logBox');
-        		    logBox.innerHTML += message + '<br>';
-        		    logBox.scrollTop = logBox.scrollHeight;
-        		}
-        		
-        		
-        		
-        		let wheelContainer = document.getElementById('wheel-container');
-        		
-        	
-        
-        		
-        		
-        		function getWheelValue(event) {
-        		    let rect = wheelContainer.getBoundingClientRect();
-        		    let centerX = rect.left + rect.width / 2;
-        		    let centerY = rect.top + rect.height / 2;
-        		    let touchX = event.clientX || event.changedTouches[0].clientX;
-        		    let touchY = event.clientY || event.changedTouches[0].clientY;
-        		
-        		    let dx = touchX - centerX;
-        		    let dy = touchY - centerY;
-        		    let distance = Math.sqrt(dx * dx + dy * dy);
-        		    let radius = rect.width / 2;
-        		    let percentage = Math.min(distance / radius, 1) * 100;
-        		    let sector = Math.floor((Math.atan2(dy, dx) + Math.PI) / (2 * Math.PI) * 11);
-        		
-        		    let value = Math.floor(percentage); // 转换为0-9999的值
-        		    return { sector, value };
-        		}
-        		
-        		// 监听轮盘点击和触摸事件
-        		function handleWheelTouchMove(event) {
-        		    event.preventDefault();
-        		    if (isTouchingWheel && !isWSCooldown) {
-        		        let { sector, value } = getWheelValue(event);
-        		        sendWSMessage(sector, value);
-        		        isWSCooldown = true;
-        		        setTimeout(() => {isWSCooldown=false;},wscdtime);
-        		
-        		    }
-        		}
-        		
-        		
-        		// 轮盘触摸开始事件
-        		wheelContainer.addEventListener('touchstart', (event) => {
-        		    isTouchingWheel = true;
-        		    handleWheelTouchMove(event.touches[0]);
-        		});
-        		
-        		// 轮盘触摸移动事件
-        		wheelContainer.addEventListener('touchmove', handleWheelTouchMove);
-        		
-        		// 轮盘触摸结束事件
-        		wheelContainer.addEventListener('touchend', () => {
-        		    if (isTouchingWheel) {
-        		        isTouchingWheel = false;
-        		        sendWSMessage(12,0);
-        		        isWSCooldown = true;
-        		        setTimeout(() => {isWSCooldown=false;},wscdtime);
-        		        
-        		    }
-        		});
+        toggleButtonValue(randomId, 0);
+        randomToggle();
+    }, delay);
+}
+		// 设置滑条数值
+		function setSliderValue(value) {
+		    document.getElementById('slider').value = value;
+		    slidervchg();
+		}
+		
+		// 同步滑条数值
+		function slidervchg() {
+		    const sliderValue = parseInt(document.getElementById('slider').value);
+		    document.getElementById('sliderv').innerHTML = `${sliderValue.toString().padStart(2,0)}%`;
+		    if(mode ===2) {
+		        updateButtonValues(sliderValue)
+		    }
+		}
+		
+		// 更新按钮的数值
+		function updateButtonValues(sliderValue) {
+		    const buttons = document.querySelectorAll('#buttons button');
+		    let actives = parseInt(sliderValue) >= 1;
+		    buttons.forEach(button => {
+		        const buttonValue = parseInt(button.innerText.split(":")[1]);
+		        if (buttonValue !== sliderValue) {
+		            button.innerText = button.innerText.split(":")[0] + `: ${sliderValue}%`;
+		            button.classList.toggle('active', actives);
+		            
+		        }
+		        button.style.opacity = ((sliderValue/100)*0.5+0.5).toString();
+		    });
+		    sendWSMessage(12, sliderValue);
+		}
+		
+		// 切换按钮数值
+		function toggleButtonValue(id,val) {
+		    
+		    const button = document.querySelector(`#button${id}`);
+		    let currentValue = parseInt(button.innerText.split(":")[1]);
+		    let sliderValue = parseInt(document.getElementById('slider').value);
+if (val !== undefined && val !== null) {
+        sliderValue = val;
+    }
+		
+		    if (currentValue === sliderValue) {
+		        currentValue = 0;
+		    } else {
+		        currentValue = sliderValue;
+		    }
+		
+		    if (currentValue < 1) {
+		        button.classList.remove('active');
+		    } else {
+		        button.classList.add('active');
+		    }
+		
+		    button.innerText = `0: ${currentValue}%`;
+		    button.style.opacity = ((currentValue/100)*0.5+0.5).toString();
+		    sendWSMessage(id, currentValue);
+		}
+		
+		//复制单行内容到粘贴板
+		function copyToClip(content, message) {
+		    var aux = document.createElement("input"); 
+		    aux.setAttribute("value", content); 
+		    document.body.appendChild(aux); 
+		    aux.select();
+		    document.execCommand("copy"); 
+		    document.body.removeChild(aux);
+		    if (message == null) {
+		        alert("复制成功");
+		    } else{
+		        alert(message);
+		    }
+		}
+		// 设置所有按钮的值
+		function setAllValues(value) {
+		    const buttons = document.querySelectorAll('#buttons button');
+		    buttons.forEach(button => {
+		        const id = parseInt(button.id.replace('button', ''));
+		        button.innerText = `0: ${value}%`;
+		        button.classList.toggle('active', value >= 1);
+		        button.style.opacity = ((value/100)*0.5+0.5).toString();
+		    });
+		    sendWSMessage(12, value);
+		}
+		
+		// 发送WS消息
+		function sendWSMessage(id, value) {
+		    const wsValue = Math.round((value / 100) * 9999);  // 将0-100%映射到0-9999
+		    const formattedValue = wsValue.toString().padStart(4, '0');
+		    const message = `${id - 1}${formattedValue}`;
+		    //logMessage(`发送命令:${id}-${value}(${message})`);
+		    //logMessage(`发送:${parseInt(id)===12?"全部":id}-${value}`);
+		    
+		    if (wsConnected && ws.readyState === WebSocket.OPEN) {
+		    logMessage(`发送成功:${parseInt(id)===12?"全部":id}-${value}`);
+		        ws.send(message);
+		    }else{
+		        logMessage(`未连接，发送失败`);
+		    }
+		}
+		
+		// 连接或断开WS
+		function toggleWSConnection() {
+		    if (wsConnected) {
+		        ws.close();
+		        wsConnected = false;
+		        document.getElementById('wsStatus').innerText = '已断开';
+		    } else {
+		    document.getElementById('wsStatus').innerText = '连接中';
+		        ws = new WebSocket("ws://"+wstarget.value);
+		        ws.onopen = () => {
+		            wsConnected = true;
+		            
+		            logMessage("连接成功");
+		        };
+		        ws.onclose = () => {
+		            wsConnected = false;
+		            document.getElementById('wsStatus').innerText = '已断开';
+		            logMessage("连接断开");
+		        };
+		        ws.onerror = () => {
+		            logMessage("连接错误");
+		        };
+		    }
+		}
+		
+		// 打印日志
+		function logMessage(message) {
+		    const logBox = document.getElementById('logBox');
+		    logBox.innerHTML += message + '<br>';
+		    logBox.scrollTop = logBox.scrollHeight;
+		}
+		
+		
+		
+		let wheelContainer = document.getElementById('wheel-container');
+		
+	
+
+		
+		
+		function getWheelValue(event) {
+		    let rect = wheelContainer.getBoundingClientRect();
+		    let centerX = rect.left + rect.width / 2;
+		    let centerY = rect.top + rect.height / 2;
+		    let touchX = event.clientX || event.changedTouches[0].clientX;
+		    let touchY = event.clientY || event.changedTouches[0].clientY;
+		
+		    let dx = touchX - centerX;
+		    let dy = touchY - centerY;
+		    let distance = Math.sqrt(dx * dx + dy * dy);
+		    let radius = rect.width / 2;
+		    let percentage = Math.min(distance / radius, 1) * 100;
+		    let sector = Math.floor((Math.atan2(dy, dx) + Math.PI) / (2 * Math.PI) * 11);
+		
+		    let value = Math.floor(percentage); // 转换为0-9999的值
+		    return { sector, value };
+		}
+		
+		// 监听轮盘点击和触摸事件
+		function handleWheelTouchMove(event) {
+		    event.preventDefault();
+		    if (isTouchingWheel && !isWSCooldown) {
+		        let { sector, value } = getWheelValue(event);
+		        sendWSMessage(sector, value);
+		        isWSCooldown = true;
+		        setTimeout(() => {isWSCooldown=false;},wscdtime);
+		
+		    }
+		}
+		
+		
+		// 轮盘触摸开始事件
+		wheelContainer.addEventListener('touchstart', (event) => {
+		    isTouchingWheel = true;
+		    handleWheelTouchMove(event.touches[0]);
+		});
+		
+		// 轮盘触摸移动事件
+		wheelContainer.addEventListener('touchmove', handleWheelTouchMove);
+		
+		// 轮盘触摸结束事件
+		wheelContainer.addEventListener('touchend', () => {
+		    if (isTouchingWheel) {
+		        isTouchingWheel = false;
+		        sendWSMessage(12,0);
+		        isWSCooldown = true;
+		        setTimeout(() => {isWSCooldown=false;},wscdtime);
+		        
+		    }
+		});
     </script>
     <p>&copy;<a href="eterill.xyz">EterIll</a> & MyZhaZha, 2025.Partial rights reserved.</p>
 </body>
