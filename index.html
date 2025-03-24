@@ -86,7 +86,7 @@
           border-bottom: 2px solid #ffffff; /* 聚焦时底部边框变为蓝色 */
         }
         
-        .button.active {
+        button.active {
           border-bottom: 2px solid #4a90e2; /* 聚焦时底部边框变为蓝色 */
          /* box-shadow: 0 0 8px rgba(74, 144, 226, 0.5); 聚焦时的光环 */
           outline: none;                    /* 移除默认的outline */
@@ -186,17 +186,11 @@
         <div>
             <div class="btmgroup">
                 <input type="text" id="wst-text" value="请稍等">
-                <button class="button" onclick="toggleWSConnection()">✧</button>
-                <button class="button" onclick="shareurl()">✈</button>
+                <button class="active" onclick="toggleWSConnection()">✧</button>
+                <button class="active" onclick="shareurl()">✈</button>
             </div>
             <p>设备连接状态: <span id="wsStatus">未连接</span></p>
         </div>
-
-        <hr />
-        <p>&copy;EterIll & MyZhaZha, 2025.Partial rights reserved.</p>
-
-
-        <!-- 日志框,记得删 -->
         <hr />
         <h4>日志</h4>
         <div class="log-box" id="logBox"></div>
@@ -219,6 +213,7 @@
         function shareurl(){
             let sip = wstarget.value.split(":")[0];
             let spp = wstarget.value.split(":")[1];
+            if(!spp){spp=81;}
             logMessage(`请将以下内容复制后粘贴给你想要分享控制权的对象（需要在同一网络下）：`);
             logMessage(`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}<br/><button onclick="copyToClip(\`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}\`);">点击复制</button>`);
         }
@@ -345,7 +340,7 @@
             logBox.scrollTop = logBox.scrollHeight;
         }
     </script>
-
+        <p>&copy;EterIll & MyZhaZha, 2025.Partial rights reserved.</p>
 </body>
 
 </html>
