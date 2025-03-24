@@ -187,6 +187,7 @@
             <div class="btmgroup">
                 <input type="text" id="wst-text" value="请稍等">
                 <button class="button" onclick="toggleWSConnection()">✧</button>
+                <button class="button" onclick="shareurl()">✈</button>
             </div>
             <p>设备连接状态: <span id="wsStatus">未连接</span></p>
         </div>
@@ -204,11 +205,22 @@
     <script>
         let ws;
         let wsConnected = false;
+        const url = new URL(window.location.href);
+        let tdip = url.searchParams.get('ip'); 
+        let tdport = url.searchParams.get('port');
+        if(!tdip){tdip="192.168.69.1";}
+        if(!tdport){tdport="81";}
+        
         let wstarget = document.getElementById('wst-text');
             
         window.onload = function(){
-            wstarget.value = (`ws://192.168.69.1:81`);
+            wstarget.value = (`${tdip}:${tdport}`);
             }
+        function shareurl(){
+            let sip = wstarget.value.split(":")[0];
+            let spp = wstarget.value.split(":")[1];
+            alert(`请将一下内容复制后粘贴给你想要分享控制权的对象，需要在同一网络下：https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}`);
+        }
         // 设置滑条数值
         function setSliderValue(value) {
             document.getElementById('slider').value = value;
@@ -291,7 +303,7 @@
                 document.getElementById('wsStatus').innerText = '已断开';
             } else {
             document.getElementById('wsStatus').innerText = '连接中';
-                ws = new WebSocket(wstarget.value);
+                ws = new WebSocket("ws://"+wstarget.value);
                 ws.onopen = () => {
                     wsConnected = true;
                     
