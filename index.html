@@ -234,7 +234,7 @@
             <div id="normal" class="ctrlgrp">
                 <div class="btmgroup">
                     <div class="sli-c">
-                    <input type="range" id="slider" class="slider" min="0" max="100" value="0" onchange="slidervchg();" />
+                    <input type="range" id="slider" class="slider" min="0" max="100" value="0" oninput="sliderpchg();" onchange="slidervchg();" />
                     </div>
                     <button id="svc" onclick="svc();"><span id="sliderv">00%</span></button>
                     <button class="menu" onclick="setSliderValue(0)">○</button>
@@ -416,6 +416,11 @@
 		    if(mode ===2) {
 		        updateButtonValues(sliderValue)
 		    }
+		}
+		
+		// 同步滑条预览数值
+		function sliderpchg() {
+		    document.getElementById('sliderv').innerHTML = `${parseInt(document.getElementById('slider').value).toString().padStart(2,0)}%`;
 		}
 		
 		// 更新按钮的数值
