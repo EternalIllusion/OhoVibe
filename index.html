@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>通道控制</title>
     <style>
-        *{
-        transition: all 0.3s ease;
+        * {
+            transition: all 0.3s ease;
         }
+        
         body {
             font-family: Arial, sans-serif;
             background-color: #EFF1F0;
@@ -20,26 +21,62 @@
             border-radius: 30px;
             padding: 20px;
         }
+        
         .button-group {
             margin: 10px 0;
         }
+        
         .slider {
             width: 200px;
         }
-    
+        .sli-c {
+            display: flex;
+            justify-content:center;
+            width:70%;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            margin: auto;
+            outline: 0;
+            background-color: transparent;
+            width: 200px;
+            width: 100%;
+        }
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 4px;
+            background: #eee;
+        }
+        input[type="range"]::-webkit-slider-container {
+            height: 20px;
+            overflow: hidden;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #27A1DC;
+            border: 1px solid transparent;
+            margin-top: -8px;
+            border-image: linear-gradient(to right,#00D2FF,#27A1DC) 0 fill / 8 20 8 0 / 0px 0px 0 200px;
+        }
         .btmgroup{
             width: 100%;
             display: -webkit-flex;
             display: flex;
             justify-content: center;
         }
+        
         .btngroup{
             width: 100%;
             display: -webkit-flex;
             display: flex;
             justify-content: space-between;
         }
-        input {
+        
+        input[type="text"] {
           background-color: #ffffff;
           border: none;
           border-bottom: 2px solid #4a90e2;
@@ -49,47 +86,73 @@
           width: 100%;
         }
         
-        input:focus {
+        input[type="text"]:focus {
           border-bottom: 2px solid #66ccff;
           outline: none;
         }
         
-        input:hover {
+        input[type="text"]:hover {
           border-bottom: 2px solid #66ccff;
         }
         
         button {
-                margin: auto;
-                padding: 5px;
-                font-size: 14px;
-                background-color: #EDEDEC;
-                color: #EDEDEC;
-                border: 2px solid #B2B2B2;
-                border-radius: 7px;
-                cursor: pointer;
-                transition: all 0.3s ease;
+            margin: auto;
+            padding: 5px;
+            font-size: 14px;
+            background-color: #EDEDEC;
+            color: #EDEDEC;
+            border: 2px solid #B2B2B2;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.3s ease;
                 
         }
             
         button.active {
-          border: 2px solid #357EC2;
-          outline: none;
-          background-color: #27A1DC;
-          color: #27A1DC;
+            border: 2px solid #357EC2;
+            outline: none;
+            background-color: #27A1DC;
+            color: #27A1DC;
         }
         
         button:active {
-          background-color: #66ccff;
-          color: #66ccff;
-          border: 2px solid #ffffff; 
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            background-color: #66ccff;
+            color: #66ccff;
+            border: 2px solid #ffffff; 
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
         .mode {
+            width: 30%;
+            border: none;
+            border-radius: 0;
+            background-color: #fff;
+            border-top: #66ccff 1px solid;
             color: #000;
             margin: auto;
         }
         .mode.active {
-            color: #fff;
+            border: none;
+            border-radius: 0;
+            background-color: #B4D6FF;
+            border-top: #27A1DC 2px solid;
+            color: #000;
+        }
+        .menu {
+            border: none;
+            background-color: #fff;
+            border-bottom: #66ccff 1px solid;
+            border-top: #ddd 1px solid;
+            color: #000;
+            margin: auto;
+        }
+        .menu:active,.menu:hover {
+            border: none;
+            border-bottom: #27A1DC 2px solid;
+            color: #000;
+        }
+        .copy {
+            color: #000;
+            margin: auto;
         }
         .button {
             width: 18vw;
@@ -100,19 +163,21 @@
         #svc {
             border: none;
             background-color:inherit;
-            box-shadow :none;
+            box-shadow: none;
             padding: 8px 0;
             color: #000;
-            }
+        }
         
         .log-box {
-            margin-top: 20px;
+            margin-top: 0px;
             height: 150px;
             border: 1px solid #ccc;
+            border-radius: 3px;
             padding: 10px;
             overflow-y: auto;
             font-size: 12px;
             background-color: #f5f5f5;
+            
         }
         #wheel-container {
             position: relative;
@@ -130,8 +195,28 @@
             overflow:hidden;
         }
         .hidd {
-            height:0;
-            opacity:0; 
+            height: 0;
+            opacity: 0; 
+            padding: 0;
+            margin: 0;
+        }
+        .log-title {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        .log-title * {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        .log-title h4 {
+            margin: auto;
+            margin-left: 0;
+        }
+        #logger {
+            margin-right: 0;
         }
     </style>
 </head>
@@ -148,17 +233,12 @@
             </div>
             <div id="normal" class="ctrlgrp">
                 <div class="btmgroup">
-                    <input type="range" id="slider" class="slider" min="0" max="100" value="0" list="tickmarks" onchange="slidervchg();" />
-                    <datalist id="tickmarks">
-                        <option value="0"></option>
-                        <option value="25"></option>
-                        <option value="50"></option>
-                        <option value="75"></option>
-                        <option value="100"></option>
-                    </datalist>
-                    <button id="svc"><span id="sliderv">00%</span></button>
-                    <button class="mode" onclick="setSliderValue(0)">○</button>
-                    <button class="mode" onclick="setSliderValue(100)">●</button>
+                    <div class="sli-c">
+                    <input type="range" id="slider" class="slider" min="0" max="100" value="0" onchange="slidervchg();" />
+                    </div>
+                    <button id="svc" onclick="svc();"><span id="sliderv">00%</span></button>
+                    <button class="menu" onclick="setSliderValue(0)">○</button>
+                    <button class="menu" onclick="setSliderValue(100)">●</button>
                 </div>
                 <hr />
 
@@ -186,7 +266,7 @@
                     </div>
                 </div>
             </div>
-            <hr />
+            
         </div>
         <!-- 全满/全关/全设置按钮 -->
         <div class="btngroup">
@@ -200,16 +280,29 @@
         <div>
             <div class="btmgroup">
                 <input type="text" id="wst-text" value="请稍等">
-                <button class="mode" onclick="toggleWSConnection()">✧</button>
-                <button class="mode" onclick="shareurl()">✈</button>
+                <button class="menu" onclick="toggleWSConnection()">✦</button>
+                <button class="menu" onclick="shareurl()">⌘</button>
             </div>
             <p>设备连接状态: <span id="wsStatus">未连接</span></p>
         </div>
         <hr />
+        <div class="log-title">
         <h4>日志</h4>
-        <div class="log-box" id="logBox"></div>
+        <button class="menu" id="logger" onclick="togglelog()">▼</button>
+        </div>
+        <div class="log-box hidd" id="logBox"></div>
     </div>
     <script>
+        
+        /* 
+         * OhoVibe Controller
+         * by EterIll
+         * All rights of code reserved.
+         * LICENCE CC.BY.SA
+         * Do not steal this to csdn!
+         */
+        
+        // 模式控制器
         let mode=0;
         /* 0=normal
         1=random
@@ -217,6 +310,7 @@
         3=touch
         */
         
+        // 切换模式
         function updatemode(modec){
             modec=parseInt(modec);
             let mran = document.getElementById('random');
@@ -230,8 +324,11 @@
                 }else{
                     mode=modec;
                 }
-                if(mode===1){
+                if(mode === 1){
                     randomToggle();
+                }
+                if(mode === 2){
+                    updateButtonValues(parseInt(document.getElementById('slider').value));
                 }
             }
             mran.classList.toggle('active', mode === 1);
@@ -244,9 +341,15 @@
         	
 		let isTouchingWheel = false;
 		let isWSCooldown = false;
+		
+		// 触摸板发送间隔
 		let wscdtime = 100;
-		//如果延迟还是比较大就把上面这个改大一点
+		// 如果控制延迟还是比较大就把上面这个改大一点
+		
+		// WebSockets实例
 		let ws;
+		
+		// 自动获取URL参数
 		let wsConnected = false;
 		const url = new URL(window.location.href);
 		let tdip = url.searchParams.get('ip'); 
@@ -254,45 +357,56 @@
 		if(!tdip){tdip="192.168.69.1";}
 		if(!tdport){tdport="81";}		
 		let wstarget = document.getElementById('wst-text');
-		    
 		window.onload = function(){
 		    wstarget.value = (`${tdip}:${tdport}`);
 		    }
+		    
+		// 切换日志显示
+		function togglelog(){
+		    document.getElementById('logBox').classList.toggle('hidd');
+		}
+		
+		// 分享控制权
 		function shareurl(){
 		    let sip = wstarget.value.split(":")[0];
 		    let spp = wstarget.value.split(":")[1];
 		    if(!spp){spp=81;}
 		    logMessage(`请将以下内容复制后粘贴给你想要分享控制权的对象（需要在同一网络下）：`);
-		    logMessage(`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}<br/><button class="mode" onclick="copyToClip(\`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}\`);">点击复制</button>`);
+		    logMessage(`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}<br/><button class="copy" onclick="copyToClip(\`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}\`);">点击复制</button>`);
 		}
-		function updateurl(){
-		    let sip = wstarget.value.split(":")[0];
-		    let spp = wstarget.value.split(":")[1];
-		    if(!spp){spp=81;}
-		    let linker = document.getElementById('lnk');
-		    linker.href=`./swipe?ip=${sip}&port=${spp}`;
-		    linker.click();
-		}
+		
+		// 随机模式
 		function randomToggle() {
-    if (mode !== 1) {
-        return;
-    }
-    const randomId = Math.floor(Math.random() * 11) + 1;
-    toggleButtonValue(randomId, 1);
-    // 随机间隔（50ms到200ms）
-    const delay = Math.floor(Math.random() * (200 - 50 + 1)) + 50;
-    setTimeout(() => {
-        if (mode !== 1) {
-            return;
+            if (mode !== 1) {
+                return;
+            }
+            const randomId = Math.floor(Math.random() * 11) + 1;
+            toggleButtonValue(randomId, 1);
+            // 随机间隔（50ms到200ms）
+            const delay = Math.floor(Math.random() * (200 - 50 + 1)) + 50;
+            setTimeout(() => {
+                if (mode !== 1) {
+                    return;
+                }
+                toggleButtonValue(randomId, 0);
+                randomToggle();
+            }, delay);
         }
-        toggleButtonValue(randomId, 0);
-        randomToggle();
-    }, delay);
-}
+        
 		// 设置滑条数值
 		function setSliderValue(value) {
 		    document.getElementById('slider').value = value;
 		    slidervchg();
+		}
+		
+		// 设置确切百分比
+		function svc(){
+		    let value = prompt('请输入数字：',document.getElementById('slider').value.toString());
+		    value = parseInt(value);
+		    if(isNaN(value)){return;}
+		    if(value>100){value = 100;}
+		    if(value<0){value=0;}
+		    setSliderValue(value);
 		}
 		
 		// 同步滑条数值
@@ -322,13 +436,12 @@
 		
 		// 切换按钮数值
 		function toggleButtonValue(id,val) {
-		    
 		    const button = document.querySelector(`#button${id}`);
 		    let currentValue = parseInt(button.innerText.split(":")[1]);
 		    let sliderValue = parseInt(document.getElementById('slider').value);
-if (val !== undefined && val !== null) {
-        sliderValue = val;
-    }
+            if (val !== undefined && val !== null) {
+                sliderValue = val;
+            }
 		
 		    if (currentValue === sliderValue) {
 		        currentValue = 0;
@@ -347,7 +460,7 @@ if (val !== undefined && val !== null) {
 		    sendWSMessage(id, currentValue);
 		}
 		
-		//复制单行内容到粘贴板
+		// 复制内容到粘贴板
 		function copyToClip(content, message) {
 		    var aux = document.createElement("input"); 
 		    aux.setAttribute("value", content); 
@@ -360,17 +473,6 @@ if (val !== undefined && val !== null) {
 		    } else{
 		        alert(message);
 		    }
-		}
-		// 设置所有按钮的值
-		function setAllValues(value) {
-		    const buttons = document.querySelectorAll('#buttons button');
-		    buttons.forEach(button => {
-		        const id = parseInt(button.id.replace('button', ''));
-		        button.innerText = `0: ${value}%`;
-		        button.classList.toggle('active', value >= 1);
-		        button.style.opacity = ((value/100)*0.5+0.5).toString();
-		    });
-		    sendWSMessage(12, value);
 		}
 		
 		// 发送WS消息
@@ -396,7 +498,8 @@ if (val !== undefined && val !== null) {
 		        wsConnected = false;
 		        document.getElementById('wsStatus').innerText = '已断开';
 		    } else {
-		    document.getElementById('wsStatus').innerText = '连接中';
+		        document.getElementById('wsStatus').innerText = '连接中';
+		        logMessage("发起连接......");
 		        ws = new WebSocket("ws://"+wstarget.value);
 		        ws.onopen = () => {
 		            wsConnected = true;
@@ -421,14 +524,9 @@ if (val !== undefined && val !== null) {
 		    logBox.scrollTop = logBox.scrollHeight;
 		}
 		
-		
-		
 		let wheelContainer = document.getElementById('wheel-container');
 		
-	
-
-		
-		
+		// 轮盘位置转换分区信号
 		function getWheelValue(event) {
 		    let rect = wheelContainer.getBoundingClientRect();
 		    let centerX = rect.left + rect.width / 2;
@@ -459,7 +557,6 @@ if (val !== undefined && val !== null) {
 		    }
 		}
 		
-		
 		// 轮盘触摸开始事件
 		wheelContainer.addEventListener('touchstart', (event) => {
 		    isTouchingWheel = true;
@@ -474,13 +571,14 @@ if (val !== undefined && val !== null) {
 		    if (isTouchingWheel) {
 		        isTouchingWheel = false;
 		        sendWSMessage(12,0);
+		        sendWSMessage(12,0);
 		        isWSCooldown = true;
 		        setTimeout(() => {isWSCooldown=false;},wscdtime);
 		        
 		    }
 		});
     </script>
-    <p>&copy;<a href="eterill.xyz">EterIll</a> & MyZhaZha, 2025.Partial rights reserved.</p>
+    <p style="font-size: 8px;" align="center">&copy;<a href="eterill.xyz" style="color:inherit;text-decoration:none;">EterIll</a> & MyZhaZha, 2025.Partial rights reserved.</p>
 </body>
 
 </html>
