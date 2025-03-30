@@ -5,445 +5,592 @@
 const char *HTML_CHANNEL = R"=====(
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>通道控制</title>
     <style>
+        * {
+            transition: all 0.3s ease;
+        }
+        
         body {
             font-family: Arial, sans-serif;
+            background-color: #EFF1F0;
         }
+        
         .container {
             margin: 20px;
+            background-color: #ffffff;
+            border-radius: 30px;
+            padding: 20px;
         }
+        
         .button-group {
             margin: 10px 0;
         }
+        
         .slider {
             width: 200px;
         }
-        .button {
+        .sli-c {
+            display: flex;
+            justify-content:center;
+            width:70%;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
             margin: auto;
-            padding: 5px;
-            font-size: 14px;
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            cursor: pointer;
+            outline: 0;
+            background-color: transparent;
+            width: 200px;
+            width: 100%;
+        }
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 4px;
+            background: #eee;
+        }
+        input[type="range"]::-webkit-slider-container {
+            height: 20px;
+            overflow: hidden;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #27A1DC;
+            border: 1px solid transparent;
+            margin-top: -8px;
+            border-image: linear-gradient(to right,#00D2FF,#27A1DC) 0 fill / 8 20 8 0 / 0px 0px 0 200px;
         }
         .btmgroup{
             width: 100%;
-            display: -webkit-flex; /* Safari */
+            display: -webkit-flex;
             display: flex;
-            justify-content: space-around;
+            justify-content: center;
         }
-        .button.active {
-            background-color: #4caf50;
-            color: white;
+        
+        .btngroup{
+            width: 100%;
+            display: -webkit-flex;
+            display: flex;
+            justify-content: space-between;
         }
-        .button:disabled {
-            background-color: #ddd;
-            cursor: not-allowed;
+        
+        input[type="text"] {
+          background-color: #ffffff;
+          border: none;
+          border-bottom: 2px solid #4a90e2;
+          padding: 8px 12px;
+          font-size: 16px;
+          transition: border-color 0.3s ease, box-shadow 0.3s ease;
+          width: 100%;
         }
+        
+        input[type="text"]:focus {
+          border-bottom: 2px solid #66ccff;
+          outline: none;
+        }
+        
+        input[type="text"]:hover {
+          border-bottom: 2px solid #66ccff;
+        }
+        
+        button {
+            margin: auto;
+            padding: 5px;
+            font-size: 14px;
+            background-color: #EDEDEC;
+            color: #EDEDEC;
+            border: 2px solid #B2B2B2;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+                
+        }
+            
+        button.active {
+            border: 2px solid #357EC2;
+            outline: none;
+            background-color: #27A1DC;
+            color: #27A1DC;
+        }
+        
+        button:active {
+            background-color: #66ccff;
+            color: #66ccff;
+            border: 2px solid #ffffff; 
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        .mode {
+            width: 30%;
+            border: none;
+            border-radius: 0;
+            background-color: #fff;
+            border-top: #66ccff 1px solid;
+            color: #000;
+            margin: auto;
+        }
+        .mode.active {
+            border: none;
+            border-radius: 0;
+            background-color: #B4D6FF;
+            border-top: #27A1DC 2px solid;
+            color: #000;
+        }
+        .menu {
+            border: none;
+            background-color: #fff;
+            border-bottom: #66ccff 1px solid;
+            border-top: #ddd 1px solid;
+            color: #000;
+            margin: auto;
+        }
+        .menu:active,.menu:hover {
+            border: none;
+            border-bottom: #27A1DC 2px solid;
+            color: #000;
+        }
+        .copy {
+            color: #000;
+            margin: auto;
+        }
+        .button {
+            width: 18vw;
+            height: 18vw;
+            margin: 2vw;
+            opacity: 0.5;
+        }
+        #svc {
+            border: none;
+            background-color:inherit;
+            box-shadow: none;
+            padding: 8px 0;
+            color: #000;
+        }
+        
         .log-box {
-            margin-top: 20px;
+            margin-top: 0px;
             height: 150px;
             border: 1px solid #ccc;
+            border-radius: 3px;
             padding: 10px;
             overflow-y: auto;
             font-size: 12px;
             background-color: #f5f5f5;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h2>通道控制</h2>
-
-    <!-- 开关按钮和滑条 -->
-    <div id="buttonGroup" class="button-group">
-        <div class="btmgroup">
-            <input type="range" id="slider" class="slider" min="0" max="100" value="0" list="tickmarks" onchange="slidervchg();" />
-<datalist id="tickmarks">
-  <option value="0"></option>
-  <option value="25"></option>
-  <option value="50"></option>
-  <option value="75"></option>
-  <option value="100"></option>
-</datalist>
-            <span id="sliderv">0%</span>
-            <button class="button" onclick="setSliderValue(0)">关</button>
-            <button class="button" onclick="setSliderValue(100)">满</button>
-        </div>
-        <hr />
-        <div id="buttons">
-            <!-- 11个按钮 -->
-            <div class="btmgroup">
-            <button id="button1" class="button" onclick="toggleButtonValue(1)">1: 0%</button>
-            <button id="button2" class="button" onclick="toggleButtonValue(2)">2: 0%</button>
-            <button id="button3" class="button" onclick="toggleButtonValue(3)">3: 0%</button>
-            <button id="button4" class="button" onclick="toggleButtonValue(4)">4: 0%</button>
-            </div>
-            <hr />
-            <div class="btmgroup">
-            <button id="button5" class="button" onclick="toggleButtonValue(5)">5: 0%</button>
-            <button id="button6" class="button" onclick="toggleButtonValue(6)">6: 0%</button>
-            <button id="button7" class="button" onclick="toggleButtonValue(7)">7: 0%</button>
-            </div>
-            <hr />
-            <div class="btmgroup">
-            <button id="button8" class="button" onclick="toggleButtonValue(8)">8: 0%</button>
-            <button id="button9" class="button" onclick="toggleButtonValue(9)">9: 0%</button>
-            <button id="button10" class="button" onclick="toggleButtonValue(10)">10: 0%</button>
-            <button id="button11" class="button" onclick="toggleButtonValue(11)">11: 0%</button>
-            </div>
-        </div>
-    </div>
-<hr />
-<hr />
-    <!-- 全满/全关/全设置按钮 -->
-    <div class="button-group">
-        <button class="button" onclick="setAllValues(100)">全满</button>
-        <button class="button" onclick="setAllValues(0)">全关</button>
-        <button class="button" onclick="setAllValues(slider.value)">全设置</button>
-    </div>
-<hr />
-<a href="/swipe">切换触摸板控制</a>
-<hr />
-    <!-- WS连接控制 -->
-    <div class="button-group">
-        <button class="button" onclick="toggleWSConnection()">连接/断开 WS</button>
-        <p>WS 状态: <span id="wsStatus">未连接</span></p>
-    </div>
-    
-    <hr />
-    <p>&copy;EterIll & MyZhaZha, 2025.Partial rights reserved.</p>
-    
-    
-    <!-- 日志框,记得删 -->
-    <hr />
-    <h4>日志,记得隐藏</h4>
-    <div class="log-box" id="logBox"></div>
-</div>
-
-<script>
-    let ws;
-    let wsConnected = false;
-
-    // 设置滑条数值
-    function setSliderValue(value) {
-        document.getElementById('slider').value = value;
-        slidervchg();
-    }
-
-    // 同步滑条到按钮数值
-    function slidervchg() {
-        const sliderValue = parseInt(document.getElementById('slider').value);
-        document.getElementById('sliderv').innerHTML = `${sliderValue}%`;
-    }
-
-    // 更新按钮的数值
-    function updateButtonValues(sliderValue) {
-        const buttons = document.querySelectorAll('#buttons button');
-        buttons.forEach(button => {
-            const buttonValue = parseInt(button.innerText.split(":")[1]);
-            if (buttonValue !== sliderValue) {
-                button.innerText = button.innerText.split(":")[0] + `: ${sliderValue}%`;
-                button.classList.remove('active');
-            }
-        });
-    }
-
-    // 切换按钮数值
-    function toggleButtonValue(id) {
-        const button = document.querySelector(`#button${id}`);
-        let currentValue = parseInt(button.innerText.split(":")[1]);
-        const sliderValue = parseInt(document.getElementById('slider').value);
-
-        if (currentValue === sliderValue) {
-            currentValue = 0;
-            button.classList.remove('active');
-        } else {
-            currentValue = sliderValue;
-            button.classList.add('active');
-        }
-
-        button.innerText = `${id}: ${currentValue}%`;
-        sendWSMessage(id, currentValue);
-    }
-
-    // 设置所有按钮的值
-    function setAllValues(value) {
-        const buttons = document.querySelectorAll('#buttons button');
-        buttons.forEach(button => {
-            const id = parseInt(button.id.replace('button', ''));
-            button.innerText = `${id}: ${value}%`;
-            button.classList.toggle('active', value >= 1);
             
-        });
-        sendWSMessage(12, value);
-    }
-
-    // 发送WS消息
-    function sendWSMessage(id, value) {
-        const wsValue = Math.round((value / 100) * 9999);  // 将0-100%映射到0-9999
-        const formattedValue = wsValue.toString().padStart(4, '0');
-        const message = `${id - 1}${formattedValue}`;
-        logMessage(`发送命令:${id}-${value}(${message})`);
-        
-        if (wsConnected && ws.readyState === WebSocket.OPEN) {
-            ws.send(message);
-        }else{
-            logMessage(`未连接，发送失败`);
-        }
-    }
-
-    // 连接或断开WS
-    function toggleWSConnection() {
-        if (wsConnected) {
-            ws.close();
-            wsConnected = false;
-            document.getElementById('wsStatus').innerText = '已断开';
-        } else {
-            ws = new WebSocket(`ws://${window.location.hostname}:81`);
-            ws.onopen = () => {
-                wsConnected = true;
-                document.getElementById('wsStatus').innerText = '已连接';
-                logMessage("WS 连接成功");
-            };
-            ws.onclose = () => {
-                wsConnected = false;
-                document.getElementById('wsStatus').innerText = '已断开';
-                logMessage("WS 连接断开");
-            };
-            ws.onerror = () => {
-                logMessage("WS 连接错误");
-            };
-        }
-    }
-
-    // 打印日志
-    function logMessage(message) {
-        const logBox = document.getElementById('logBox');
-        logBox.innerHTML += message + '<br>';
-        logBox.scrollTop = logBox.scrollHeight;
-    }
-</script>
-
-</body>
-</html>
-
-)=====";
-
-const char *HTML_SWIPE = R"=====(
-<!DOCTYPE html>
-<html lang="zh">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>轮盘控制</title>
-    <h4>注：需要触摸屏</h4>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
         }
         #wheel-container {
             position: relative;
-            width: 80vw;
-            height: 80vw;
+            width: 70vw;
+            height: 70vw;
             margin: 50px auto;
             border-radius: 50%;
             border: 2px solid #000;
-            /*background: conic-gradient(
-                #ff0000 0deg 32.73deg,
-                #ff7f00 32.73deg 65.46deg,
-                #ffff00 65.46deg 98.18deg,
-                #00ff00 98.18deg 130.91deg,
-                #0000ff 130.91deg 163.64deg,
-                #4b0082 163.64deg 196.36deg,
-                #9400d3 196.36deg 229.09deg,
-                #ff1493 229.09deg 261.82deg,
-                #ff4500 261.82deg 294.55deg,
-                #2e8b57 294.55deg 327.27deg,
-                #d2691e 327.27deg 360deg
-            );*/
-            background-color: #ccc;
-            margin-bottom: 30px;
+            background-color: #eff1f0;
+            margin-bottom: 30px
         }
-        #slider-container {
+        .ctrlgrp{
+            height:auto;
+            opacity:1;
+            overflow:hidden;
+        }
+        .hidd {
+            height: 0;
+            opacity: 0; 
+            padding: 0;
+            margin: 0;
+        }
+        .log-title {
+            display: flex;
+            justify-content: space-between;
             width: 100%;
-            height: 30px;
-            margin: 0 auto;
-            background-color: #ccc;
-            position: relative;
-            border-radius: 15px;
+            padding: 0;
+            margin: 0;
         }
-        #slider-bar {
-            position: absolute;
-            width: 20px;
-            height: 30px;
-            background-color: #000;
-            border-radius: 50%;
-            cursor: pointer;
+        .log-title * {
+            margin-top: 0;
+            margin-bottom: 0;
         }
-        #ws-status {
-            margin: 20px 0;
+        .log-title h4 {
+            margin: auto;
+            margin-left: 0;
         }
-        #log {
-            margin-top: 20px;
-            height: 200px;
-            overflow-y: scroll;
-            border: 1px solid #ccc;
-            padding: 10px;
-            font-size: 12px;
-            background-color: #f9f9f9;
-            text-align: left;
+        #logger {
+            margin-right: 0;
         }
-        #control-btn {
-            margin: 10px;
-            padding: 10px 20px;
-            cursor: pointer;
+        .r {
+            margin-right: 5px;
+            margin-left: auto;
+        }
+        #wsst {
+            width: 100%;
         }
     </style>
 </head>
+
 <body>
-    <h3>触摸板控制</h3>
+    <div class="container">
 
-    <!-- 轮盘 -->
-    <div id="wheel-container"></div>
-<hr />
-<a href="/">切换通道控制</a>
-<hr />
+        <h2>通道控制</h2>
+        <!-- 开关按钮和滑条 -->
+        <div id="buttonGroup" class="button-group">
+            <div id="swiper" class="ctrlgrp hidd">
+                <div id="wheel-container"></div>
+                <div style="height:5vw;"></div>
+            </div>
+            <div id="normal" class="ctrlgrp">
+                <div class="btmgroup">
+                    <div class="sli-c">
+                    <input type="range" id="slider" class="slider" min="0" max="100" value="0" oninput="sliderpchg();" onchange="slidervchg();" />
+                    </div>
+                    <button id="svc" onclick="svc();"><span id="sliderv">00%</span></button>
+                    <button class="menu" onclick="setSliderValue(0)">○</button>
+                    <button class="menu" onclick="setSliderValue(100)">●</button>
+                </div>
+                <hr />
 
-    <!-- WebSocket 状态显示 -->
-    <div id="ws-status">设备状态: 未连接</div>
+                <div id="buttons">
+                    <!-- 11个按钮 -->
+                    <div class="btmgroup">
+                        <button id="button1" class="button" onclick="toggleButtonValue(1)">0: 0%</button>
+                        <button id="button2" class="button" onclick="toggleButtonValue(2)">0: 0%</button>
+                    </div>
+                    <div class="btmgroup">
+                        <button id="button3" class="button" onclick="toggleButtonValue(3)">0: 0%</button>
+                        <button id="button4" class="button" onclick="toggleButtonValue(4)">0: 0%</button>
 
-    <!-- WebSocket 控制按钮 -->
-    <button id="control-btn">连接</button>
-    <hr />
-    <p>&copy;EterIll & MyZhaZha, 2025.Partial rights reserved.</p>
-    
-    <!-- 日志显示记得删 -->
-    <div id="log"></div>
-
+                        <button id="button5" class="button" onclick="toggleButtonValue(5)">0: 0%</button>
+                    </div>
+                    <div class="btmgroup">
+                        <button id="button6" class="button" onclick="toggleButtonValue(6)">0: 0%</button>
+                        <button id="button7" class="button" onclick="toggleButtonValue(7)">0: 0%</button>
+                        <button id="button8" class="button" onclick="toggleButtonValue(8)">0: 0%</button>
+                    </div>
+                    <div class="btmgroup">
+                        <button id="button9" class="button" onclick="toggleButtonValue(9)">0: 0%</button>
+                        <button id="button10" class="button" onclick="toggleButtonValue(10)">0: 0%</button>
+                        <button id="button11" class="button" onclick="toggleButtonValue(11)">0: 0%</button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <!-- 全满/全关/全设置按钮 -->
+        <div class="btngroup">
+            <button class="mode" id="touching" onclick="updatemode(3);">触摸模式</button>
+            <button class="mode" id="random" onclick="updatemode(1);">随机模式</button>
+            <button class="mode" id="powerful" onclick="updatemode(2);">强力模式</button>
+        </div>
+        <a id="lnk" style="display:none;"></a>
+        <hr />
+        <!-- WS连接控制 -->
+        <div>
+            <div class="btmgroup">
+<p id="wsst">设备连接状态: <span id="wsStatus">未连接</span></p>
+                <button class="menu r" onclick="toggleWSConnection()">✦</button>
+                <button class="menu r" onclick="shareurl()">⌘</button>
+            </div>
+            
+        </div>
+        <hr />
+        <div class="log-title">
+        <h4>日志</h4>
+        <button class="menu" id="logger" onclick="togglelog()">▼</button>
+        </div>
+        <div class="log-box hidd" id="logBox"></div>
+    </div>
     <script>
-        let socket = null;
-        let wscdtime = 100;
-        //如果延迟还是比较大就把上面这个改大一点
-        let isConnected = false;
-        let wsStatusElement = document.getElementById('ws-status');
-        let logElement = document.getElementById('log');
-        let controlBtn = document.getElementById('control-btn');
-        let wheelContainer = document.getElementById('wheel-container');
-
-        let isTouchingWheel = false;
-        let isTouchingSlider = false;
-        let isWSCooldown = false;
-
-        // WebSocket连接和控制
-        controlBtn.addEventListener('click', () => {
-            if (isConnected) {
-                socket.close();
-                isConnected = false;
-                wsStatusElement.textContent = '设备状态: 已断开';
-                controlBtn.textContent = '连接';
-            } else {
-                socket = new WebSocket(`ws://${window.location.hostname}:81`);
-                socket.onopen = () => {
-                    isConnected = true;
-                    wsStatusElement.textContent = '设备状态: 已连接';
-                    controlBtn.textContent = '断开';
-                    logToConsole('WebSocket 已连接');
-                };
-                socket.onclose = () => {
-                    isConnected = false;
-                    wsStatusElement.textContent = '设备状态: 已断开';
-                    controlBtn.textContent = '连接';
-                    logToConsole('WebSocket 已断开');
-                };
-                socket.onerror = (error) => {
-                    logToConsole('WebSocket 错误: ' + error);
-                };
-            }
-        });
-
-        // 记录日志
-        function logToConsole(message) {
-            let logMessage = document.createElement('div');
-            logMessage.textContent = message;
-            logElement.appendChild(logMessage);
-            logElement.scrollTop = logElement.scrollHeight;
-        }
-
-        // 计算点击位置与中心的距离
-        function getWheelValue(event) {
-            let rect = wheelContainer.getBoundingClientRect();
-            let centerX = rect.left + rect.width / 2;
-            let centerY = rect.top + rect.height / 2;
-            let touchX = event.clientX || event.changedTouches[0].clientX;
-            let touchY = event.clientY || event.changedTouches[0].clientY;
-
-            let dx = touchX - centerX;
-            let dy = touchY - centerY;
-            let distance = Math.sqrt(dx * dx + dy * dy);
-            let radius = rect.width / 2;
-            let percentage = Math.min(distance / radius, 1) * 100;
-            let sector = Math.floor((Math.atan2(dy, dx) + Math.PI) / (2 * Math.PI) * 11);
-
-            let value = Math.floor(percentage * 99.99); // 转换为0-9999的值
-            return { sector, value };
-        }
-
-        // 监听轮盘点击和触摸事件
-        function handleWheelTouchMove(event) {
-            event.preventDefault();
-            if (isTouchingWheel && !isWSCooldown) {
-                let { sector, value } = getWheelValue(event);
-                let command = sector.toString().padStart(2, '0') + Math.round(value).toString().padStart(4, '0');
-                logToConsole(`发送指令: ${command}`);
-                isWSCooldown = true;
-                setTimeout(() => {isWSCooldown=false;},wscdtime);
-
-                if (isConnected && socket.readyState === WebSocket.OPEN) {
-                    socket.send(command);
-                    
-                } else {
-                    logToConsole('未连接，发送失败');
+        
+        /* 
+         * OhoVibe Controller
+         * by EterIll
+         * All rights of code reserved.
+         * LICENCE CC.BY.SA
+         * Do not steal this to csdn!
+         */
+        
+        // 模式控制器
+        let mode=0;
+        /* 0=normal
+        1=random
+        2=powerful
+        3=touch
+        */
+        
+        // 切换模式
+        function updatemode(modec){
+            modec=parseInt(modec);
+            let mran = document.getElementById('random');
+            let mpow = document.getElementById('powerful');
+            let mtch = document.getElementById('touching');
+            let cnorm = document.getElementById('normal');
+            let cswip = document.getElementById('swiper');
+            if(modec < 4){
+                if(modec===mode){
+                    mode=0;
+                }else{
+                    mode=modec;
+                }
+                if(mode === 1){
+                    randomToggle();
+                }
+                if(mode === 2){
+                    updateButtonValues(parseInt(document.getElementById('slider').value));
                 }
             }
+            mran.classList.toggle('active', mode === 1);
+            mpow.classList.toggle('active', mode === 2);
+            mtch.classList.toggle('active', mode === 3);
+            cswip.classList.toggle('hidd', mode !== 3);
+            cnorm.classList.toggle('hidd', mode === 3);
+            
         }
-
-
-        // 轮盘触摸开始事件
-        wheelContainer.addEventListener('touchstart', (event) => {
-            isTouchingWheel = true;
-            handleWheelTouchMove(event.touches[0]);
-        });
-
-        // 轮盘触摸移动事件
-        wheelContainer.addEventListener('touchmove', handleWheelTouchMove);
-
-        // 轮盘触摸结束事件
-        wheelContainer.addEventListener('touchend', () => {
-            if (isTouchingWheel) {
-                isTouchingWheel = false;
-                let command = '110000';  // 触摸结束时发送110000
-                logToConsole(`发送指令: ${command}`);
-                isWSCooldown = true;
-                setTimeout(() => {isWSCooldown=false;},wscdtime);
-                if (isConnected && socket.readyState === WebSocket.OPEN) {
-                    socket.send(command);
-                    isWSCooldown = true;
-                    setTimeout(() => {socket.send(command);},50);
-                } else {
-                    logToConsole('未连接，发送失败');
-                }
+        	
+		let isTouchingWheel = false;
+		let isWSCooldown = false;
+		
+		// 触摸板发送间隔
+		let wscdtime = 100;
+		// 如果控制延迟还是比较大就把上面这个改大一点
+		
+		// WebSockets实例
+		let ws;
+		
+		let wsConnected = false;
+		
+		window.onload = function(){
+		    toggleWSConnection();
+		    }
+		
+		// 切换日志显示
+		function togglelog(){
+		    document.getElementById('logBox').classList.toggle('hidd');
+		}
+		
+		// 分享控制权
+		function shareurl(){
+		    let sip = `${window.location.hostname}`;
+		    let spp = 81;
+		    if(!spp){spp=81;}
+		    logMessage(`请将以下内容复制后粘贴给你想要分享控制权的对象（需要在同一网络下）：`);
+		    logMessage(`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}<br/><button class="copy" onclick="copyToClip(\`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}\`);">点击复制</button>`);
+		}
+		
+		// 随机模式
+		function randomToggle() {
+            if (mode !== 1) {
+                return;
             }
-        });
-
+            const randomId = Math.floor(Math.random() * 11) + 1;
+            toggleButtonValue(randomId, 1);
+            // 随机间隔（50ms到200ms）
+            const delay = Math.floor(Math.random() * (200 - 50 + 1)) + 50;
+            setTimeout(() => {
+                if (mode !== 1) {
+                    return;
+                }
+                toggleButtonValue(randomId, 0);
+                randomToggle();
+            }, delay);
+        }
+        
+		// 设置滑条数值
+		function setSliderValue(value) {
+		    document.getElementById('slider').value = value;
+		    slidervchg();
+		}
+		
+		// 设置确切百分比
+		function svc(){
+		    let value = prompt('请输入数字：',document.getElementById('slider').value.toString());
+		    value = parseInt(value);
+		    if(isNaN(value)){return;}
+		    if(value>100){value = 100;}
+		    if(value<0){value=0;}
+		    setSliderValue(value);
+		}
+		
+		// 同步滑条数值
+		function slidervchg() {
+		    const sliderValue = parseInt(document.getElementById('slider').value);
+		    document.getElementById('sliderv').innerHTML = `${sliderValue.toString().padStart(2,0)}%`;
+		    if(mode ===2) {
+		        updateButtonValues(sliderValue)
+		    }
+		}
+		
+		// 同步滑条预览数值
+		function sliderpchg() {
+		    document.getElementById('sliderv').innerHTML = `${parseInt(document.getElementById('slider').value).toString().padStart(2,0)}%`;
+		}
+		
+		// 更新按钮的数值
+		function updateButtonValues(sliderValue) {
+		    const buttons = document.querySelectorAll('#buttons button');
+		    let actives = parseInt(sliderValue) >= 1;
+		    buttons.forEach(button => {
+		        const buttonValue = parseInt(button.innerText.split(":")[1]);
+		        if (buttonValue !== sliderValue) {
+		            button.innerText = button.innerText.split(":")[0] + `: ${sliderValue}%`;
+		            button.classList.toggle('active', actives);
+		            
+		        }
+		        button.style.opacity = ((sliderValue/100)*0.5+0.5).toString();
+		    });
+		    sendWSMessage(12, sliderValue);
+		}
+		
+		// 切换按钮数值
+		function toggleButtonValue(id,val) {
+		    const button = document.querySelector(`#button${id}`);
+		    let currentValue = parseInt(button.innerText.split(":")[1]);
+		    let sliderValue = parseInt(document.getElementById('slider').value);
+            if (val !== undefined && val !== null) {
+                sliderValue = val;
+            }
+		
+		    if (currentValue === sliderValue) {
+		        currentValue = 0;
+		    } else {
+		        currentValue = sliderValue;
+		    }
+		
+		    if (currentValue < 1) {
+		        button.classList.remove('active');
+		    } else {
+		        button.classList.add('active');
+		    }
+		
+		    button.innerText = `0: ${currentValue}%`;
+		    button.style.opacity = ((currentValue/100)*0.5+0.5).toString();
+		    sendWSMessage(id, currentValue);
+		}
+		
+		// 复制内容到粘贴板
+		function copyToClip(content, message) {
+		    var aux = document.createElement("input"); 
+		    aux.setAttribute("value", content); 
+		    document.body.appendChild(aux); 
+		    aux.select();
+		    document.execCommand("copy"); 
+		    document.body.removeChild(aux);
+		    if (message == null) {
+		        alert("复制成功");
+		    } else{
+		        alert(message);
+		    }
+		}
+		
+		// 发送WS消息
+		function sendWSMessage(id, value) {
+		    const wsValue = Math.round((value / 100) * 9999);  // 将0-100%映射到0-9999
+		    const formattedValue = wsValue.toString().padStart(4, '0');
+		    const message = `${id - 1}${formattedValue}`;
+		    //logMessage(`发送命令:${id}-${value}(${message})`);
+		    //logMessage(`发送:${parseInt(id)===12?"全部":id}-${value}`);
+		    
+		    if (wsConnected && ws.readyState === WebSocket.OPEN) {
+		    logMessage(`发送成功:${parseInt(id)===12?"全部":id}-${value}`);
+		        ws.send(message);
+		    }else{
+		        logMessage(`未连接，发送失败`);
+		    }
+		}
+		
+		// 连接或断开WS
+		function toggleWSConnection() {
+		    if (wsConnected) {
+		        ws.close();
+		        wsConnected = false;
+		        document.getElementById('wsStatus').innerText = '已断开';
+		    } else {
+		        document.getElementById('wsStatus').innerText = '连接中';
+		        logMessage("发起连接......");
+		        ws = new WebSocket("ws://"+`${window.location.hostname}`+":81");
+		        ws.onopen = () => {
+		            wsConnected = true;
+		            
+		            logMessage("连接成功");
+		        };
+		        ws.onclose = () => {
+		            wsConnected = false;
+		            document.getElementById('wsStatus').innerText = '已断开';
+		            logMessage("连接断开");
+		        };
+		        ws.onerror = () => {
+		            logMessage("连接错误");
+		        };
+		    }
+		}
+		
+		// 打印日志
+		function logMessage(message) {
+		    const logBox = document.getElementById('logBox');
+		    logBox.innerHTML += message + '<br>';
+		    logBox.scrollTop = logBox.scrollHeight;
+		}
+		
+		let wheelContainer = document.getElementById('wheel-container');
+		
+		// 轮盘位置转换分区信号
+		function getWheelValue(event) {
+		    let rect = wheelContainer.getBoundingClientRect();
+		    let centerX = rect.left + rect.width / 2;
+		    let centerY = rect.top + rect.height / 2;
+		    let touchX = event.clientX || event.changedTouches[0].clientX;
+		    let touchY = event.clientY || event.changedTouches[0].clientY;
+		
+		    let dx = touchX - centerX;
+		    let dy = touchY - centerY;
+		    let distance = Math.sqrt(dx * dx + dy * dy);
+		    let radius = rect.width / 2;
+		    let percentage = Math.min(distance / radius, 1) * 100;
+		    let sector = Math.floor((Math.atan2(dy, dx) + Math.PI) / (2 * Math.PI) * 11);
+		
+		    let value = Math.floor(percentage); // 转换为0-9999的值
+		    return { sector, value };
+		}
+		
+		// 监听轮盘点击和触摸事件
+		function handleWheelTouchMove(event) {
+		    event.preventDefault();
+		    if (isTouchingWheel && !isWSCooldown) {
+		        let { sector, value } = getWheelValue(event);
+		        sendWSMessage(sector, value);
+		        isWSCooldown = true;
+		        setTimeout(() => {isWSCooldown=false;},wscdtime);
+		
+		    }
+		}
+		
+		// 轮盘触摸开始事件
+		wheelContainer.addEventListener('touchstart', (event) => {
+		    isTouchingWheel = true;
+		    handleWheelTouchMove(event.touches[0]);
+		});
+		
+		// 轮盘触摸移动事件
+		wheelContainer.addEventListener('touchmove', handleWheelTouchMove);
+		
+		// 轮盘触摸结束事件
+		wheelContainer.addEventListener('touchend', () => {
+		    if (isTouchingWheel) {
+		        isTouchingWheel = false;
+		        sendWSMessage(12,0);
+		        sendWSMessage(12,0);
+		        isWSCooldown = true;
+		        setTimeout(() => {isWSCooldown=false;},wscdtime);
+		        
+		    }
+		});
     </script>
+    <p style="font-size: 8px;" align="center">&copy;<a href="eterill.xyz" style="color:inherit;text-decoration:none;">EterIll</a> & MyZhaZha, 2025.Partial rights reserved.</p>
 </body>
-</html>
 
+</html>
 )=====";

@@ -19,7 +19,7 @@
 #include <Preferences.h>
 #include <esp_wifi.h>  //用于删除保存的wifi信息，踏马的鲨臂espressif
 #include "SetWiFi.h"   //Web配网
-
+#include <DNSServer.h>
 #include <ESPAsyncWebServer.h>
 #include <WebSocketsServer.h>
 #include "htmlfiles.h"
@@ -100,6 +100,15 @@ int mapIntensityToPWM(int intensity) {
 
 AsyncWebServer wsserver(80);
 WebSocketsServer webSocket = WebSocketsServer(81);  // WebSocket 端口 81
+
+//初始化DNS服务器
+void initDNS(void) {
+  if (dnsServer.start(DNS_PORT, "*", apIP)) {  //判断将所有地址映射到esp的ip上是否成功
+    Serial.println("start dnsserver success.");
+  } else {
+    Serial.println("start dnsserver failed.");
+  }
+}
 
 // WebSocket 回调函数
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length) {
@@ -261,13 +270,13 @@ void setup() {
     String html = HTML_CHANNEL;  //头文件里面，自己找
     request->send(200, "text/html", html);
   });
-  wsserver.on("/swipe", HTTP_GET, [](AsyncWebServerRequest* request) {
-    Serial.println("Web Server: received request,wan de hai ting hua.");
-    String html = HTML_SWIPE;
-    request->send(200, "text/html", html);
-  });
-
+  
   wsserver.begin();
+  
+  Serial.println("ws server ok.Starting dns server.");
+
+  initDNS();//启动dns服务器
+  
   Serial.print("ESP32 Web Server's IP address: ");
   Serial.println(WiFi.localIP());
   
