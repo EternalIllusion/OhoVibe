@@ -102,7 +102,7 @@ AsyncWebServer wsserver(80);
 WebSocketsServer webSocket = WebSocketsServer(81);  // WebSocket 端口 81
 
 //初始化DNS服务器
-void initDNS(void) {
+void initAppDNS(void) {
   if (dnsServer.start(DNS_PORT, "*", apIP)) {  //判断将所有地址映射到esp的ip上是否成功
     Serial.println("start dnsserver success.");
   } else {
@@ -275,7 +275,7 @@ void setup() {
   
   Serial.println("ws server ok.Starting dns server.");
 
-  initDNS();//启动dns服务器
+  initAppDNS();//启动dns服务器
   
   Serial.print("ESP32 Web Server's IP address: ");
   Serial.println(WiFi.localIP());
