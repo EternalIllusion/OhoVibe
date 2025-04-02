@@ -3,6 +3,17 @@
 
 <head>
     <meta charset="UTF-8">
+    
+    
+    <script src="./jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="./jquery-confirm.min.css">
+    <script src="./jquery-confirm.min.js"></script>
+    
+    <!--
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>通道控制</title>
     <style>
@@ -404,8 +415,24 @@
 		    let sip = wstarget.value.split(":")[0];
 		    let spp = wstarget.value.split(":")[1];
 		    if(!spp){spp=81;}
-		    logMessage(`请将以下内容复制后粘贴给你想要分享控制权的对象（需要在同一网络下）：`);
-		    logMessage(`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}<br/><button class="copy" onclick="copyToClip(\`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}\`);">点击复制</button>`);
+		    $.confirm({
+                title: '分享控制权',
+                content: `请将以下内容复制后粘贴给你想要分享控制权的对象（需要在同一网络下）：<br />https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}`,
+                buttons: {
+                    copy: {
+                        text: '一键复制',
+                        btnClass: 'btn-blue',
+                        keys: ['enter', 'shift'],
+                        action: function(){
+                            copyToClip(`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}`);
+                        }
+                    },
+                    cancel: {
+                        text: '取消',
+                        btnClass: 'btn-grey',
+                    }
+                }
+            });
 		}
 		
 		// 随机模式
@@ -523,7 +550,10 @@
 		    document.execCommand("copy"); 
 		    document.body.removeChild(aux);
 		    if (message == null) {
-		        alert("复制成功");
+		        $.alert({
+                    title: '提示',
+                    content: '复制成功!',
+                });
 		    } else{
 		        alert(message);
 		    }
