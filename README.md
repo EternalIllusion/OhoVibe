@@ -6,10 +6,15 @@ Written in arduino and based on ESP32.
 Online controller: [click here](https://eterill.xyz/OhoVibe/)
 
 **Update history:**
+
 | 1.2.0 release |
+
 BugFix: motor not enabled
+
 BugFix: Websocket command issues
+
 Feature: custom random mode interval
+
 Feature: share control permission to friends.
 
 ## Dependencies
