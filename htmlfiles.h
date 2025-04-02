@@ -39,6 +39,16 @@ const char *HTML_CHANNEL = R"=====(
             justify-content:center;
             width:70%;
         }
+        .sli-cc {
+            width:70%;
+        }
+        
+        #rndsw {
+            display: inline-block;
+            flex: none;
+            width:100%;
+        }
+        
         input[type="range"] {
             -webkit-appearance: none;
             appearance: none;
@@ -172,6 +182,13 @@ const char *HTML_CHANNEL = R"=====(
             padding: 8px 0;
             color: #000;
         }
+        #src {
+            border: none;
+            background-color:inherit;
+            box-shadow: none;
+            padding: 8px 0;
+            color: #000;
+        }
         
         .log-box {
             margin-top: 0px;
@@ -205,6 +222,9 @@ const char *HTML_CHANNEL = R"=====(
             padding: 0;
             margin: 0;
         }
+        .hidden {
+            display: none;
+        }
         .log-title {
             display: flex;
             justify-content: space-between;
@@ -223,13 +243,10 @@ const char *HTML_CHANNEL = R"=====(
         #logger {
             margin-right: 0;
         }
-        .r {
-            margin-right: 5px;
-            margin-left: auto;
+        .random-section {
+            overflow: hidden;
         }
-        #wsst {
-            width: 100%;
-        }
+        
     </style>
 </head>
 
@@ -252,6 +269,8 @@ const char *HTML_CHANNEL = R"=====(
                     <button class="menu" onclick="setSliderValue(0)">○</button>
                     <button class="menu" onclick="setSliderValue(100)">●</button>
                 </div>
+                
+
                 <hr />
 
                 <div id="buttons">
@@ -278,7 +297,10 @@ const char *HTML_CHANNEL = R"=====(
                     </div>
                 </div>
             </div>
-            
+        <div class="random-section btmgroup hidd" id="rndss">
+            <div class="sli-cc"><ui-range min="50" max="5000" value="500,1000" multiple="" id="rndsw"></ui-range></div>
+            <button id="src"><span id="rndv">0.50-1.00s</span></button>
+        </div>
         </div>
         <!-- 全满/全关/全设置按钮 -->
         <div class="btngroup">
@@ -290,12 +312,11 @@ const char *HTML_CHANNEL = R"=====(
         <hr />
         <!-- WS连接控制 -->
         <div>
-            <div class="btmgroup">
+<div class="btmgroup">
 <p id="wsst">设备连接状态: <span id="wsStatus">未连接</span></p>
                 <button class="menu r" onclick="toggleWSConnection()">✦</button>
                 <button class="menu r" onclick="shareurl()">⌘</button>
             </div>
-            
         </div>
         <hr />
         <div class="log-title">
@@ -330,6 +351,7 @@ const char *HTML_CHANNEL = R"=====(
             let mtch = document.getElementById('touching');
             let cnorm = document.getElementById('normal');
             let cswip = document.getElementById('swiper');
+            let rndss = document.getElementById('rndss');
             if(modec < 4){
                 if(modec===mode){
                     mode=0;
@@ -348,12 +370,14 @@ const char *HTML_CHANNEL = R"=====(
             mtch.classList.toggle('active', mode === 3);
             cswip.classList.toggle('hidd', mode !== 3);
             cnorm.classList.toggle('hidd', mode === 3);
+            rndss.classList.toggle('hidd', mode !== 1);
             
         }
         	
 		let isTouchingWheel = false;
 		let isWSCooldown = false;
-		
+		let rndcda = 500;
+		let rndcdb = 1000;
 		// 触摸板发送间隔
 		let wscdtime = 100;
 		// 如果控制延迟还是比较大就把上面这个改大一点
@@ -361,12 +385,13 @@ const char *HTML_CHANNEL = R"=====(
 		// WebSockets实例
 		let ws;
 		
+		// 自动获取URL参数
 		let wsConnected = false;
-		
 		window.onload = function(){
+		    document.getElementById('rndsw').addEventListener('input', srcvchg);
 		    toggleWSConnection();
 		    }
-		
+		    
 		// 切换日志显示
 		function togglelog(){
 		    document.getElementById('logBox').classList.toggle('hidd');
@@ -387,9 +412,9 @@ const char *HTML_CHANNEL = R"=====(
                 return;
             }
             const randomId = Math.floor(Math.random() * 11) + 1;
-            toggleButtonValue(randomId, 1);
-            // 随机间隔（50ms到200ms）
-            const delay = Math.floor(Math.random() * (200 - 50 + 1)) + 50;
+            toggleButtonValue(randomId,document.getElementById('slider').value );
+            // 随机间隔
+            const delay = Math.floor(Math.random() * (rndcdb - rndcda + 1)) + rndcda;
             setTimeout(() => {
                 if (mode !== 1) {
                     return;
@@ -414,6 +439,22 @@ const char *HTML_CHANNEL = R"=====(
 		    if(value<0){value=0;}
 		    setSliderValue(value);
 		}
+		
+		// 设置随机模式范围
+		function srcvchg() {
+		    let dom = document.getElementById('rndsw');
+		    let domv = document.getElementById('rndv');
+		    let val = dom.value.split(/,\s*|\s+/);
+		    let intvala = parseInt(val[0]);
+		    let intvalb = parseInt(val[1]);
+		    rndcda = intvala;
+		    rndcdb = intvalb;
+		    intvala = (intvala/1000).toFixed(2);
+		    intvalb = (intvalb/1000).toFixed(2);
+		    domv.innerHTML = `${intvala}-${intvalb}s`;
+		}
+		
+		
 		
 		// 同步滑条数值
 		function slidervchg() {
@@ -490,8 +531,10 @@ const char *HTML_CHANNEL = R"=====(
 		function sendWSMessage(id, value) {
 		    const wsValue = Math.round((value / 100) * 9999);  // 将0-100%映射到0-9999
 		    const formattedValue = wsValue.toString().padStart(4, '0');
-		    const message = `${id - 1}${formattedValue}`;
-		    //logMessage(`发送命令:${id}-${value}(${message})`);
+		    let iid = id -1;
+		    iid = iid.toString().padStart(2, '0');
+		    const message = `${iid}${formattedValue}`;
+		    logMessage(`发送命令(${message}).`);
 		    //logMessage(`发送:${parseInt(id)===12?"全部":id}-${value}`);
 		    
 		    if (wsConnected && ws.readyState === WebSocket.OPEN) {
@@ -551,7 +594,6 @@ const char *HTML_CHANNEL = R"=====(
 		    let radius = rect.width / 2;
 		    let percentage = Math.min(distance / radius, 1) * 100;
 		    let sector = Math.floor((Math.atan2(dy, dx) + Math.PI) / (2 * Math.PI) * 11);
-		
 		    let value = Math.floor(percentage); // 转换为0-9999的值
 		    return { sector, value };
 		}
@@ -561,7 +603,7 @@ const char *HTML_CHANNEL = R"=====(
 		    event.preventDefault();
 		    if (isTouchingWheel && !isWSCooldown) {
 		        let { sector, value } = getWheelValue(event);
-		        sendWSMessage(sector, value);
+		        sendWSMessage(sector+1, value);
 		        isWSCooldown = true;
 		        setTimeout(() => {isWSCooldown=false;},wscdtime);
 		
@@ -587,7 +629,148 @@ const char *HTML_CHANNEL = R"=====(
 		        setTimeout(() => {isWSCooldown=false;},wscdtime);
 		        
 		    }
-		});
+		});		
+		
+		/*
+		 * Range selector widget
+		 * by Zhangxinxu | modified by EterIll
+		 * https://www.zhangxinxu.com/study/202102/two-range-input-demo.php
+		 */
+		
+		class uiRange extends HTMLElement {
+            constructor () {
+                super();
+            }
+            static get style () {
+                return `<style>
+        :host{--ui-range-track-hegiht:4px;--ui-range-thumb-size:16px;--ui-gray:#eee;--ui-blue:#00D2FF;display:inline-block;position:relative}:host([multiple]){pointer-events:none}[type="range"]{display:block;-webkit-appearance:none;appearance:none;margin:0;outline:0;background:none;width:-webkit-fill-available;width:fill-available;width:fill}[type="range"] + [type="range"]{position:absolute;left:0;top:0;bottom:0;margin:auto}[type="range"]::-webkit-slider-runnable-track{display:flex;align-items:center;height:var(--ui-range-track-hegiht);border-radius:var(--ui-range-track-hegiht);background:linear-gradient(to right,var(--ui-gray) calc(1% * var(--from,0)),var(--ui-blue) calc(1% * var(--from,0)) calc(1% * var(--to,100)),var(--ui-gray) 0%)}[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;pointer-events:auto;width:var(--ui-range-thumb-size);height:var(--ui-range-thumb-size);border-radius:50%;background-color:#fff;box-shadow:0 1px 3px 1px rgba(0,0,0,.25);transition:border-color .15s,background-color .15s;cursor:pointer;margin-top:calc((var(--ui-range-thumb-size) - var(--ui-range-track-hegiht)) * -0.5)}[type="range"]::-webkit-slider-thumb:active{background-color:var(--ui-light,#f7f9fa);box-shadow:0 0 1px 1px rgba(0,0,0,.25)}[type="range"] + [type="range"]::-webkit-slider-runnable-track{background:none}[type="range"]{width:-moz-available}input[type=range]::-moz-range-track{display:flex;align-items:center;height:var(--ui-range-track-hegiht);border-radius:var(--ui-range-track-hegiht);background:linear-gradient(to right,var(--ui-gray) calc(1% * var(--from,0)),var(--ui-blue) calc(1% * var(--from,0)) calc(1% * var(--to,100)),var(--ui-gray) 0%)}input[type=range]::-moz-range-thumb{-webkit-appearance:none;appearance:none;pointer-events:auto;width:var(--ui-range-thumb-size);height:var(--ui-range-thumb-size);border-radius:50%;background-color:#fff;box-shadow:0 1px 3px 1px rgba(0,0,0,.25);transition:border-color .15s,background-color .15s;cursor:pointer;margin-top:calc((var(--ui-range-thumb-size) - var(--ui-range-track-hegiht)) * -0.5)}[type="range"]::-moz-range-thumb:active{background-color:var(--ui-light,#f7f9fa);box-shadow:0 0 1px 1px rgba(0,0,0,.25)}[type="range"] + [type="range"]::-moz-range-track{background:none}
+        </style>`;
+            }
+            static get observedAttributes () {
+                return ['max', 'min', 'step', 'value'];
+            }
+            get value () {
+                return this.getAttribute('value');
+            }
+            set value (val) {
+                this.setAttribute('value', val);
+            }
+            get min () {
+                return this.getAttribute('min') || '0';
+            }
+            set min (val) {
+                this.setAttribute('min', val);
+            }
+            get max () {
+                return this.getAttribute('max') || '100';
+            }
+            set max (val) {
+                this.setAttribute('max', val);
+            }
+            get step () {
+                return this.getAttribute('step') || '1';
+            }
+            set step (val) {
+                this.setAttribute('step', val);
+            }
+        
+            get multiple () {
+                return this.hasAttribute('multiple');
+            }
+            set multiple (val) {
+                this.toggleAttribute('multiple', val);
+            }
+        
+            connectedCallback () {
+                this.create();
+            }
+            attributeChangedCallback (name, oldValue, newValue) {
+                // 略，非重点
+                this.render();
+            }
+            create () {
+                // Shadow DOM元素
+                let shadow = this.attachShadow({
+                    mode: 'open'
+                });
+        
+                // 样式
+                shadow.innerHTML = uiRange.style;
+        
+                // 赋值处理
+                let value = this.value || '';
+                let arrValue = value.split(/,\s*|\s+/);
+        
+                if (this.multiple && arrValue.length === 1) {
+                    arrValue[1] = arrValue[0];
+                }
+                arrValue.forEach((val, index) => {
+                    let range = document.createElement('input');
+                    range.type = 'range';
+                    // 默认属性
+                    ['max', 'min', 'step'].forEach(attr => {
+                        if (this.hasAttribute(attr)) {
+                            range[attr] = this[attr];
+                        }
+                    });
+                    // 赋值处理
+                    if (val) {
+                        range.value = val;
+                    }
+        
+                    // 事件处理
+                    range.addEventListener('input', (event) => {
+                        this.dispatchEvent(new CustomEvent('input'));
+                    });
+        
+                    // 放在Shadow DOM中
+                    shadow.append(range);
+                    // 暴露给自定义元素
+                    this['range' + index] = range;
+                });
+                
+                // 事件
+                this.events();
+            }
+        
+            events () {
+                this.addEventListener('input', _ => {
+                    // value值变化
+                    let value0 = this.range0.value;
+                    this.value = value0;
+                    if (this.multiple) {
+                        let value1 = this.range1.value;
+                        this.value = [value0, value1].map(val => {
+                            return Number(val);
+                        }).sort(function (a, b) {
+                            return a - b;
+                        }).join();
+                    }
+                });
+            }
+        
+            render () {
+                let value = this.value;
+                let arrValue = value.split(/,\s*|\s+/);
+                // 百分比值确定
+                let min = this.min;
+                let max = this.max;
+                let distance = max - min;
+                let from = 0;
+                let to = 100;
+        
+                if (this.multiple) {
+                    from = 100 * (arrValue[0] - min) / distance;            
+                }
+                to = 100 * ((arrValue[1] || arrValue[0]) - min) / distance;
+        
+                this.style.setProperty('--from', from);
+                this.style.setProperty('--to', to);
+            }
+        }
+        if (!customElements.get('ui-range')) {
+            customElements.define('ui-range', uiRange);
+        }
     </script>
     <p style="font-size: 8px;" align="center">&copy;<a href="eterill.xyz" style="color:inherit;text-decoration:none;">EterIll</a> & MyZhaZha, 2025.Partial rights reserved.</p>
 </body>

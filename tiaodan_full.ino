@@ -8,7 +8,7 @@
  * @package TD_ESP32
  * @author EterIll
  * @author MyZhaZha
- * @version R_1.1.1_TEST(TEST_RELEASE)
+ * @version R_1.2.0(RELEASE)
  * @sponsor 一袋星光
  */
  
@@ -17,7 +17,7 @@
 
 #include <WiFi.h>
 #include <Preferences.h>
-#include <esp_wifi.h>  //用于删除保存的wifi信息，踏马的鲨臂espressif
+#include <esp_wifi.h>  //用于删除保存的wifi
 #include "SetWiFi.h"   //Web配网
 #include <DNSServer.h>
 #include <ESPAsyncWebServer.h>
@@ -25,13 +25,12 @@
 #include "htmlfiles.h"
 
 //其他依赖
-//#include <DNSServer.h>
 //#include <WebServer.h>
 
 // 通道数量
 #define NUM_CHANNELS 11
 
-// 引脚定义
+// 引脚定义，注意有些引脚无法使用pwm
 const int PIN_EN[NUM_CHANNELS] = {22, 21, 35, 5, 26, 33, 16, 0, 14, 2, 13};
 const int PIN_PWM[NUM_CHANNELS] = {23, 19, 34, 18, 25, 32, 17, 4, 27, 15, 12};
 
@@ -41,7 +40,7 @@ const char* ap_password = "13572468";
 //启用更详尽的串口日志
 const bool detailedlog = true;
 
-//启用AP网络
+//启用AP网络,用于联网后显示IP地址
 const bool enableap = false;
 
 //=====================================//
@@ -76,12 +75,12 @@ void handleChannel(int channel, int intensity) {
   if (intensity == 0) {
     // 强度为 0000 时，PWM 0% 并且 EN 拉高
     ledcWrite(pwmChannels[channel], 0); // PWM 0%
-    digitalWrite(PIN_EN[channel], HIGH);
+    digitalWrite(PIN_EN[channel], LOW);
   } else {
     // 强度为 0001 到 9999 时，计算 PWM 占空比并且 EN 拉低
     // 映射强度值：强度 0001 对应 51%，9999 对应 100%。 50%以下对应驱动器刹车
     int pwmValue = mapIntensityToPWM(intensity); // 计算 PWM 占空比
-    digitalWrite(PIN_EN[channel], LOW);
+    digitalWrite(PIN_EN[channel], HIGH);
     ledcWrite(pwmChannels[channel], pwmValue); // 设置 PWM 占空比
     //Serial.printf("Execute CH%d en-%d pwm-%d value-%d\n", channel, PIN_EN[channel], pwmChannels[channel], pwmValue);
   }
@@ -159,7 +158,7 @@ void setup() {
     // 设置引脚模式
     Serial.printf("CH%d : EN-%d PWM-%d\r\n", i, PIN_EN[i], PIN_PWM[i]);
     pinMode(PIN_EN[i], OUTPUT);
-    digitalWrite(PIN_EN[i], HIGH);  // 默认 EN 拉高
+    digitalWrite(PIN_EN[i], LOW);  // 默认 EN 拉高
     pinMode(PIN_PWM[i], OUTPUT);    // 设置 PWM 引脚为输出
     // 配置 PWM 通道
     ledcSetup(pwmChannels[i], LEDC_FREQ, LEDC_RESOLUTION);
@@ -255,6 +254,10 @@ void setup() {
     } else {
       Serial.println("Failed to create AP");
     }
+    
+    Serial.println("Starting dns server.");
+
+    initAppDNS();//启动dns服务器
   
   }
   
@@ -273,9 +276,8 @@ void setup() {
   
   wsserver.begin();
   
-  Serial.println("ws server ok.Starting dns server.");
+  Serial.println("Web Server ok.");
 
-  initAppDNS();//启动dns服务器
   
   Serial.print("ESP32 Web Server's IP address: ");
   Serial.println(WiFi.localIP());
