@@ -5,6 +5,13 @@ Written in arduino and based on ESP32.
 
 Online controller: [click here](https://eterill.xyz/OhoVibe/)
 
+**Update history:**
+| 1.2.0 release |
+BugFix: motor not enabled
+BugFix: Websocket command issues
+Feature: custom random mode interval
+Feature: share control permission to friends.
+
 ## Dependencies
 
 You need to install **ESP32** Boards and **following libraries**.
@@ -27,6 +34,8 @@ Some boards may stuck while flashing and inform you that you should perform powe
 ## Healthy Warnings
 
 You should properly use the thing and careful with potential risks.
+
+This product contains **remote control** feature, please don't expose your ip on the web.
 
 **THIS IS NOT A TREATING PRODUCT AND WILL NOT HELP IN TREATING PROCESS.**
 
