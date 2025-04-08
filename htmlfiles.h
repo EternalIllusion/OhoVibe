@@ -402,8 +402,11 @@ const char *HTML_CHANNEL = R"=====(
 		    let sip = `${window.location.hostname}`;
 		    let spp = 81;
 		    if(!spp){spp=81;}
-		    logMessage(`请将以下内容复制后粘贴给你想要分享控制权的对象（需要在同一网络下）：`);
-		    logMessage(`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}<br/><button class="copy" onclick="copyToClip(\`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}\`);">点击复制</button>`);
+		    if(confirm(`请将以下内容复制后粘贴给你想要分享控制权的对象（需要在同一网络下）：
+https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}
+点击确定一键复制`)){
+		        copyToClip(`https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}`);
+		    }
 		}
 		
 		// 随机模式
