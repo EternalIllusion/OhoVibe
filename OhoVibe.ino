@@ -8,7 +8,7 @@
  * @package TD_ESP32
  * @author EterIll
  * @author MyZhaZha
- * @version R_1.2.0(RELEASE)
+ * @version R_1.2.1(RELEASE)
  * @sponsor 一袋星光
  */
  
@@ -27,11 +27,11 @@
 //#include <WebServer.h>
 
 // 通道数量
-#define NUM_CHANNELS 11
+#define NUM_CHANNELS 9
 
 // 引脚定义，注意34-39无法使用pwm
-const int PIN_EN[NUM_CHANNELS] = {22, 21, 35, 5, 26, 34, 16, 4, 14, 2, 13};
-const int PIN_PWM[NUM_CHANNELS] = {23, 19, 32, 18, 25, 33, 17, 0, 27, 15, 12};
+const int PIN_EN[NUM_CHANNELS] = {22, 21, 5, 26, 16, 4, 14, 2, 13};
+const int PIN_PWM[NUM_CHANNELS] = {23, 19, 18, 25, <17, 0, 27, 15, 12};
 
 // 设置创建热点的密码，确保密码长度不少于8个字符
 const char* ap_password = "13572468";
@@ -47,7 +47,7 @@ const bool enableap = false;
 IPAddress wsapIP(192, 168, 69, 1);  //esp32-AP-IP地址
 
 // 定义 LEDC 通道号（ESP32 支持 16 个 PWM 通道），别动！
-int pwmChannels[NUM_CHANNELS] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+int pwmChannels[NUM_CHANNELS] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
 
 // 设置 LEDC 通道频率和分辨率
 #define LEDC_FREQ 5000    // PWM频率 5kHz
@@ -137,7 +137,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length)
         if (channel >= 0 && channel < NUM_CHANNELS) {
           handleChannel(channel, intensity);
         }
-        // 如果是通道 11，表示设置所有通道的强度
+        // 如果是一键操作，表示设置所有通道的强度
         else if (channel == NUM_CHANNELS) {
           for (int i = 0; i < NUM_CHANNELS; i++) {
             handleChannel(i, intensity);
@@ -162,6 +162,7 @@ void setup() {
     // 配置 PWM 通道
     ledcSetup(pwmChannels[i], LEDC_FREQ, LEDC_RESOLUTION);
     ledcAttachPin(PIN_PWM[i], pwmChannels[i]);
+    ledcWrite(PIN_PWM[i], 0);
   }
   
   Serial.println("ESP32 WIFI init.");

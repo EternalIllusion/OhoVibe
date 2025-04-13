@@ -274,26 +274,22 @@ const char *HTML_CHANNEL = R"=====(
                 <hr />
 
                 <div id="buttons">
-                    <!-- 11个按钮 -->
-                    <div class="btmgroup">
+                    <!-- 9个按钮 -->
+                                        <div class="btmgroup">
                         <button id="button1" class="button" onclick="toggleButtonValue(1)">0: 0%</button>
                         <button id="button2" class="button" onclick="toggleButtonValue(2)">0: 0%</button>
+                        <button id="button3" class="button" onclick="toggleButtonValue(3)">0: 0%</button>
                     </div>
                     <div class="btmgroup">
-                        <button id="button3" class="button" onclick="toggleButtonValue(3)">0: 0%</button>
                         <button id="button4" class="button" onclick="toggleButtonValue(4)">0: 0%</button>
 
                         <button id="button5" class="button" onclick="toggleButtonValue(5)">0: 0%</button>
+                        <button id="button6" class="button" onclick="toggleButtonValue(6)">0: 0%</button>
                     </div>
                     <div class="btmgroup">
-                        <button id="button6" class="button" onclick="toggleButtonValue(6)">0: 0%</button>
                         <button id="button7" class="button" onclick="toggleButtonValue(7)">0: 0%</button>
                         <button id="button8" class="button" onclick="toggleButtonValue(8)">0: 0%</button>
-                    </div>
-                    <div class="btmgroup">
                         <button id="button9" class="button" onclick="toggleButtonValue(9)">0: 0%</button>
-                        <button id="button10" class="button" onclick="toggleButtonValue(10)">0: 0%</button>
-                        <button id="button11" class="button" onclick="toggleButtonValue(11)">0: 0%</button>
                     </div>
                 </div>
             </div>
@@ -353,7 +349,10 @@ const char *HTML_CHANNEL = R"=====(
             let cswip = document.getElementById('swiper');
             let rndss = document.getElementById('rndss');
             if(modec < 4){
-                if(modec===mode){
+                if(modec===mode){//退出模式
+                    if(modec===2){
+                        updateButtonValues(0);
+                    }
                     mode=0;
                 }else{
                     mode=modec;
@@ -414,7 +413,7 @@ https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}
             if (mode !== 1) {
                 return;
             }
-            const randomId = Math.floor(Math.random() * 11) + 1;
+            const randomId = Math.floor(Math.random() * 9) + 1;
             toggleButtonValue(randomId,document.getElementById('slider').value );
             // 随机间隔
             const delay = Math.floor(Math.random() * (rndcdb - rndcda + 1)) + rndcda;
@@ -486,7 +485,7 @@ https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}
 		        }
 		        button.style.opacity = ((sliderValue/100)*0.5+0.5).toString();
 		    });
-		    sendWSMessage(12, sliderValue);
+		    sendWSMessage(10, sliderValue);
 		}
 		
 		// 切换按钮数值
@@ -538,10 +537,10 @@ https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}
 		    iid = iid.toString().padStart(2, '0');
 		    const message = `${iid}${formattedValue}`;
 		    logMessage(`发送命令(${message}).`);
-		    //logMessage(`发送:${parseInt(id)===12?"全部":id}-${value}`);
+		    //logMessage(`发送:${parseInt(id)===10?"全部":id}-${value}`);
 		    
 		    if (wsConnected && ws.readyState === WebSocket.OPEN) {
-		    logMessage(`发送成功:${parseInt(id)===12?"全部":id}-${value}`);
+		    logMessage(`发送成功:${parseInt(id)===10?"全部":id}-${value}`);
 		        ws.send(message);
 		    }else{
 		        logMessage(`未连接，发送失败`);
@@ -596,7 +595,7 @@ https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}
 		    let distance = Math.sqrt(dx * dx + dy * dy);
 		    let radius = rect.width / 2;
 		    let percentage = Math.min(distance / radius, 1) * 100;
-		    let sector = Math.floor((Math.atan2(dy, dx) + Math.PI) / (2 * Math.PI) * 11);
+		    let sector = Math.floor((Math.atan2(dy, dx) + Math.PI) / (2 * Math.PI) * 9);
 		    let value = Math.floor(percentage); // 转换为0-9999的值
 		    return { sector, value };
 		}
@@ -626,8 +625,8 @@ https://eterill.xyz/OhoVibe/?ip=${sip}&port=${spp}
 		wheelContainer.addEventListener('touchend', () => {
 		    if (isTouchingWheel) {
 		        isTouchingWheel = false;
-		        sendWSMessage(12,0);
-		        sendWSMessage(12,0);
+		        sendWSMessage(10,0);
+		        sendWSMessage(10,0);
 		        isWSCooldown = true;
 		        setTimeout(() => {isWSCooldown=false;},wscdtime);
 		        
