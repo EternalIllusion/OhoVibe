@@ -1,5 +1,5 @@
 # OhoVibe
-A simple controller program for MyZhaZha's vibe plug.
+A simple controller program for MyZhaZha's vibrate massager.
 
 Written in arduino and based on ESP32.
 
