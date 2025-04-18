@@ -30,8 +30,8 @@
 #define NUM_CHANNELS 9
 
 // 引脚定义，注意34-39无法使用pwm
-const int PIN_EN[NUM_CHANNELS] = {22, 21, 5, 26, 16, 4, 14, 2, 13};
-const int PIN_PWM[NUM_CHANNELS] = {23, 19, 18, 25, <17, 0, 27, 15, 12};
+const int PIN_EN[NUM_CHANNELS] = {22, 21, 26, 5, 16, 14, 4, 2, 13};
+const int PIN_PWM[NUM_CHANNELS] = {23, 19, 25, 18, 17, 27, 0, 15, 12};
 
 // 设置创建热点的密码，确保密码长度不少于8个字符
 const char* ap_password = "13572468";
