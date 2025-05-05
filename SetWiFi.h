@@ -13,7 +13,7 @@ String scanNetworksID = "";
 //配网页面代码2
 const String page_html2 = R"(</datalist></div><div class="form-item"><input id="password" type="password" name="password" autocomplete="off" placeholder="WiFi密码"></div><div class="form-item"><div><input id="send_button" type="submit" value="保存并连接"></div></div><div class="form-item"><div class="user_text"><br /></div></div></form></div></body></html>)";
 
-const char* AP_NAME = "ESP32TiaoDan";  //Web配网模式下的AP-wifi名字
+const char* AP_NAME = "OhoVibe_Config";  //Web配网模式下的AP-wifi名字
 
 //暂时存储wifi账号密码
 char sta_ssid[32] = { 0 };      //定义配网得到的WIFI名长度(最大32字节)
@@ -67,6 +67,7 @@ void handleRootPost() {  //Post回调函数获取wifi账号与密码
   prefs.begin("wifi");
   prefs.putString("ssid", wifiid);        //写入账号
   prefs.putString("password", wifipass);  //写入密码
+  prefs.putBool("rap", true);
   prefs.end();
 
   server.send(200, "text/html", "<meta charset='UTF-8'><h1>保存成功,ESP32重启中...</h1>");  //返回保存成功页面
